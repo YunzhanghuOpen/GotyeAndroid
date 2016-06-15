@@ -1,9 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical" >
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/white"
+              android:orientation="vertical"
+    >
 
     <TextView
         android:layout_width="match_parent"
@@ -12,30 +12,35 @@
         android:gravity="center"
         android:text="设置"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        />
 
     <include
         android:id="@+id/error_tip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/error_tip"
-        android:visibility="visible" />
+        android:visibility="visible"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            >
 
             <RelativeLayout
                 android:id="@+id/icon_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp" >
+                android:paddingRight="10dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -44,7 +49,8 @@
                     android:text="头像"
                     android:textColor="@color/gray"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    />
 
                 <ImageView
                     android:id="@+id/icon"
@@ -52,7 +58,8 @@
                     android:layout_height="50dp"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/head_icon_user" />
+                    android:src="@drawable/head_icon_user"
+                    />
             </RelativeLayout>
 
             <ImageView
@@ -60,14 +67,16 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:src="@drawable/break_line" />
+                android:src="@drawable/break_line"
+                />
 
             <RelativeLayout
                 android:id="@+id/nickname_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp" >
+                android:paddingRight="10dp"
+                >
 
                 <TextView
                     android:id="@+id/nn_id"
@@ -77,7 +86,8 @@
                     android:text="昵称"
                     android:textColor="@color/gray"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    />
 
                 <EditText
                     android:id="@+id/nick_name"
@@ -90,7 +100,8 @@
                     android:background="@null"
                     android:gravity="right"
                     android:paddingRight="10dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    />
             </RelativeLayout>
 
             <ImageView
@@ -98,14 +109,16 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:src="@drawable/break_line" />
+                android:src="@drawable/break_line"
+                />
 
             <RelativeLayout
                 android:id="@+id/info_layout"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp" >
+                android:paddingRight="10dp"
+                >
 
                 <TextView
                     android:id="@+id/info_id"
@@ -115,7 +128,8 @@
                     android:text="ID"
                     android:textColor="@color/gray"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    />
 
                 <EditText
                     android:id="@+id/info_name"
@@ -128,7 +142,8 @@
                     android:background="@null"
                     android:gravity="right"
                     android:paddingRight="10dp"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    />
             </RelativeLayout>
 
             <ImageView
@@ -136,14 +151,16 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:src="@drawable/break_line" />
+                android:src="@drawable/break_line"
+                />
 
             <RelativeLayout
                 android:id="@+id/new_msg_setting"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp" >
+                android:paddingRight="10dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -152,7 +169,8 @@
                     android:text="新消息通知"
                     android:textColor="@color/gray"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    />
 
                 <CheckBox
                     android:id="@+id/new_msg"
@@ -162,7 +180,8 @@
                     android:layout_centerVertical="true"
                     android:background="@drawable/toggle_btn"
                     android:button="@null"
-                    android:checked="true" />
+                    android:checked="true"
+                    />
             </RelativeLayout>
 
             <ImageView
@@ -170,7 +189,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/break_line" />
+                android:src="@drawable/break_line"
+                />
 
             <!-- <RelativeLayout
                 android:id="@+id/group_msg_setting"
@@ -204,14 +224,16 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:src="@drawable/break_line" />
+                android:src="@drawable/break_line"
+                />
 
             <RelativeLayout
                 android:id="@+id/chat_setting"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp" >
+                android:paddingRight="10dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -220,17 +242,19 @@
                     android:text="是否开启敏感词过滤"
                     android:textColor="@color/gray"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    />
 
                 <CheckBox
                     android:id="@+id/msg_filter"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" 
+                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:background="@drawable/toggle_btn"
                     android:button="@null"
-                    android:checked="false" />
+                    android:checked="false"
+                    />
             </RelativeLayout>
 
             <ImageView
@@ -238,7 +262,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/break_line" />
+                android:src="@drawable/break_line"
+                />
 
             <Button
                 android:id="@+id/clear_cache"
@@ -251,7 +276,8 @@
                 android:padding="0dp"
                 android:text="清理缓存数据"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                />
 
             <Button
                 android:id="@+id/logout_btn"
@@ -263,7 +289,8 @@
                 android:background="@drawable/dismiss_group_selector"
                 android:padding="0dp"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                />
         </LinearLayout>
     </ScrollView>
 

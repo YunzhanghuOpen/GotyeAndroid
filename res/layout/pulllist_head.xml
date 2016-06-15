@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- ListView的头部 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:background="#FFFFFFFF" >
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:paddingTop="5dp"
+              android:paddingBottom="5dp"
+              android:background="#FFFFFFFF"
+    >
 
     <!-- 内容 -->
 
@@ -15,7 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:paddingLeft="10dp" >
+        android:paddingLeft="10dp"
+        >
 
         <!-- 箭头图像、进度条 -->
 
@@ -23,7 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true" >
+            android:layout_centerVertical="true"
+            >
 
             <!-- 箭头 -->
 
@@ -32,7 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/pulltorefresh" />
+                android:src="@drawable/pulltorefresh"
+                />
 
             <!-- 进度条 -->
 
@@ -42,7 +46,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:visibility="gone" />
+                android:visibility="gone"
+                />
         </FrameLayout>
 
         <!-- 提示、最近更新 -->
@@ -52,7 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            >
 
             <!-- 提示 -->
 
@@ -60,15 +66,18 @@
                 android:id="@+id/head_tipsTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                />
 
             <!-- 最近更新 -->
 
             <TextView
                 android:id="@+id/head_lastUpdatedTextView"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:visibility="gone"
-                android:textSize="13sp" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:textSize="13sp"
+                />
         </LinearLayout>
     </RelativeLayout>
 

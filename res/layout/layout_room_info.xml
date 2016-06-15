@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/tab_bg_color"
-    android:orientation="vertical" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/tab_bg_color"
+                android:orientation="vertical"
+    >
 
     <RelativeLayout
         android:id="@+id/title_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/title_bar_bg" >
+        android:background="@drawable/title_bar_bg"
+        >
 
         <ImageView
             android:id="@+id/back"
@@ -20,7 +22,8 @@
             android:layout_centerVertical="true"
             android:onClick="back"
             android:padding="15dp"
-            android:src="@drawable/back" />
+            android:src="@drawable/back"
+            />
 
         <TextView
             android:id="@+id/room_name"
@@ -29,7 +32,8 @@
             android:layout_centerInParent="true"
             android:text=""
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
     </RelativeLayout>
 
     <GridView
@@ -41,33 +45,38 @@
         android:background="@color/white"
         android:horizontalSpacing="5dp"
         android:numColumns="5"
-        android:verticalSpacing="5dp" >
+        android:verticalSpacing="5dp"
+        >
     </GridView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/members"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        >
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:background="@color/tab_bg_color" />
+            android:background="@color/tab_bg_color"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:paddingBottom="5dp"
-            android:paddingTop="5dp" >
+            android:paddingTop="5dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:text="显示用户昵称" />
+                android:text="显示用户昵称"
+                />
 
             <CheckBox
                 android:id="@+id/show_member_name"
@@ -76,27 +85,31 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/toggle_btn"
-                android:button="@null" />
+                android:button="@null"
+                />
         </RelativeLayout>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:background="@color/tab_bg_color" />
+            android:background="@color/tab_bg_color"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:paddingBottom="5dp"
-            android:paddingTop="5dp" >
+            android:paddingTop="5dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:text="聊天置顶" />
+                android:text="聊天置顶"
+                />
 
             <CheckBox
                 android:id="@+id/set_to_top"
@@ -105,7 +118,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/toggle_btn"
-                android:button="@null" />
+                android:button="@null"
+                />
         </RelativeLayout>
 
         <ImageView
@@ -114,21 +128,24 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/white"
-            android:src="@drawable/break_line" />
+            android:src="@drawable/break_line"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:paddingBottom="5dp"
-            android:paddingTop="5dp" >
+            android:paddingTop="5dp"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:text="聊天室消息免打扰" />
+                android:text="聊天室消息免打扰"
+                />
 
             <CheckBox
                 android:id="@+id/no_disturb"
@@ -137,7 +154,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/toggle_btn"
-                android:button="@null" />
+                android:button="@null"
+                />
         </RelativeLayout>
 
         <!--

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/background_light"
-    android:orientation="vertical" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/background_light"
+                android:orientation="vertical"
+    >
 
     <RelativeLayout
         android:id="@+id/title_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/title_bar_bg" >
+        android:background="@drawable/title_bar_bg"
+        >
 
         <ImageView
             android:id="@+id/back"
@@ -21,7 +23,8 @@
             android:background="@drawable/common_tab_bg"
             android:clickable="true"
             android:scaleType="centerInside"
-            android:src="@drawable/back" />
+            android:src="@drawable/back"
+            />
 
         <TextView
             android:id="@+id/title_tx"
@@ -30,7 +33,8 @@
             android:layout_centerInParent="true"
             android:text="发起群聊"
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
 
         <Button
             android:id="@+id/ok"
@@ -45,7 +49,8 @@
             android:paddingRight="5dp"
             android:paddingTop="2dp"
             android:text="确认(0)"
-            android:textColor="@color/app_color" />
+            android:textColor="@color/app_color"
+            />
     </RelativeLayout>
 
     <ListView
@@ -53,7 +58,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title_bar_layout"
-        android:paddingRight="20dp" >
+        android:paddingRight="20dp"
+        >
     </ListView>
 
     <com.open_demo.view.SideBar
@@ -62,7 +68,8 @@
         android:layout_height="fill_parent"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/title_bar_layout"
-        android:layout_gravity="right|center" />
+        android:layout_gravity="right|center"
+        />
 
     <LinearLayout
         android:id="@+id/group_name_layout"
@@ -71,12 +78,14 @@
         android:layout_below="@+id/title_bar_layout"
         android:background="@color/white"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="gone"
+        >
 
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" >
+            android:layout_gravity="center_horizontal"
+            >
 
             <ImageView
                 android:id="@+id/set_group_head"
@@ -84,13 +93,15 @@
                 android:layout_height="60dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/contact_group" />
+                android:src="@drawable/contact_group"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/set_group_head"
-                android:text="点击设置群头像" />
+                android:text="点击设置群头像"
+                />
         </RelativeLayout>
 
         <TextView
@@ -98,7 +109,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="40dp"
-            android:text="群名称" />
+            android:text="群名称"
+            />
 
         <EditText
             android:id="@+id/input_group_name"
@@ -106,14 +118,16 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/input_bg" />
+            android:background="@drawable/input_bg"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
-            android:text="群信息" />
+            android:text="群信息"
+            />
 
         <EditText
             android:id="@+id/input_group_info"
@@ -121,13 +135,15 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/input_bg" />
+            android:background="@drawable/input_bg"
+            />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -135,7 +151,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:text="是否验证" />
+                android:text="是否验证"
+                />
 
             <CheckBox
                 android:id="@+id/need_validate"
@@ -145,14 +162,16 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/toggle_btn"
-                android:button="@null" />
+                android:button="@null"
+                />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -160,7 +179,8 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:text="是否公开群" />
+                android:text="是否公开群"
+                />
 
             <CheckBox
                 android:id="@+id/is_public"
@@ -171,7 +191,8 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/toggle_btn"
                 android:button="@null"
-                android:checked="true" />
+                android:checked="true"
+                />
         </RelativeLayout>
 
         <Button
@@ -184,7 +205,8 @@
             android:background="@drawable/btn_selector"
             android:padding="0dp"
             android:text="确定"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            />
     </LinearLayout>
 
 </RelativeLayout>

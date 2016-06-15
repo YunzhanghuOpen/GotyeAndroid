@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/view_groupinfo"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/tab_bg_color"
-    android:orientation="vertical" >
+                android:id="@+id/view_groupinfo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/tab_bg_color"
+                android:orientation="vertical"
+    >
 
     <RelativeLayout
         android:id="@+id/title_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/title_bar_bg" >
+        android:background="@drawable/title_bar_bg"
+        >
 
         <ImageView
             android:id="@+id/back"
@@ -23,7 +25,8 @@
             android:clickable="true"
             android:onClick="back"
             android:scaleType="centerInside"
-            android:src="@drawable/back" />
+            android:src="@drawable/back"
+            />
 
         <TextView
             android:id="@+id/group_name"
@@ -32,7 +35,8 @@
             android:layout_centerInParent="true"
             android:text=""
             android:textColor="@color/white"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            />
     </RelativeLayout>
 
     <GridView
@@ -45,37 +49,43 @@
         android:horizontalSpacing="5dp"
         android:numColumns="5"
         android:verticalSpacing="5dp"
-        android:visibility="visible" >
+        android:visibility="visible"
+        >
     </GridView>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/members" >
+        android:layout_below="@+id/members"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            >
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:background="@color/tab_bg_color" />
+                android:background="@color/tab_bg_color"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp" >
+                android:paddingTop="5dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:text="群名称:" />
+                    android:text="群名称:"
+                    />
 
                 <EditText
                     android:id="@+id/for_modify_group_name"
@@ -85,7 +95,8 @@
                     android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/group_ioon"
                     android:singleLine="true"
-                    android:text="等你修改" />
+                    android:text="等你修改"
+                    />
 
                 <ImageView
                     android:id="@+id/group_ioon"
@@ -93,27 +104,31 @@
                     android:layout_height="60dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/head_icon_user" />
+                    android:src="@drawable/head_icon_user"
+                    />
             </RelativeLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:background="@color/tab_bg_color" />
+                android:background="@color/tab_bg_color"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp" >
+                android:paddingTop="5dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:text="群主" />
+                    android:text="群主"
+                    />
 
                 <TextView
                     android:id="@+id/owner_name"
@@ -122,7 +137,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="5dp"
                     android:layout_toLeftOf="@+id/group_owner_icon"
-                    android:text="群主 name" />
+                    android:text="群主 name"
+                    />
 
                 <ImageView
                     android:id="@+id/group_owner_icon"
@@ -130,20 +146,23 @@
                     android:layout_height="60dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dp"
-                    android:src="@drawable/head_icon_user" />
+                    android:src="@drawable/head_icon_user"
+                    />
             </RelativeLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:background="@color/tab_bg_color" />
+                android:background="@color/tab_bg_color"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp" >
+                android:paddingTop="5dp"
+                >
 
                 <TextView
                     android:id="@+id/group_info_title"
@@ -151,7 +170,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:text="群信息" />
+                    android:text="群信息"
+                    />
 
                 <EditText
                     android:id="@+id/info"
@@ -163,13 +183,15 @@
                     android:layout_toRightOf="@+id/group_info_title"
                     android:background="@null"
                     android:singleLine="true"
-                    android:text="无" />
+                    android:text="无"
+                    />
             </RelativeLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:background="@color/tab_bg_color" />
+                android:background="@color/tab_bg_color"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -177,25 +199,29 @@
                 android:background="@color/white"
                 android:paddingBottom="5dp"
                 android:paddingTop="5dp"
-                android:weightSum="2" >
+                android:weightSum="2"
+                >
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="是否需要验证" />
+                        android:text="是否需要验证"
+                        />
 
                     <CheckBox
                         android:id="@+id/need_validate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:button="@drawable/toggle_btn" />
+                        android:button="@drawable/toggle_btn"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -203,39 +229,45 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal"
+                    >
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="是否公开" />
+                        android:text="是否公开"
+                        />
 
                     <CheckBox
                         android:id="@+id/is_public"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:button="@drawable/toggle_btn" />
+                        android:button="@drawable/toggle_btn"
+                        />
                 </LinearLayout>
             </LinearLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:background="@color/tab_bg_color" />
+                android:background="@color/tab_bg_color"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp" >
+                android:paddingTop="5dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:text="显示用户昵称" />
+                    android:text="显示用户昵称"
+                    />
 
                 <CheckBox
                     android:id="@+id/show_member_name"
@@ -244,27 +276,31 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/toggle_btn"
-                    android:button="@null" />
+                    android:button="@null"
+                    />
             </RelativeLayout>
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-                android:background="@color/tab_bg_color" />
+                android:background="@color/tab_bg_color"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp" >
+                android:paddingTop="5dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:text="聊天置顶" />
+                    android:text="聊天置顶"
+                    />
 
                 <CheckBox
                     android:id="@+id/set_to_top"
@@ -273,7 +309,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/toggle_btn"
-                    android:button="@null" />
+                    android:button="@null"
+                    />
             </RelativeLayout>
 
             <ImageView
@@ -282,8 +319,9 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:background="@color/white"
-                android:src="@drawable/break_line" />
-			<!-- <RelativeLayout
+                android:src="@drawable/break_line"
+                />
+            <!-- <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
@@ -321,14 +359,17 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="5dp"
-                android:paddingTop="5dp" >
+                android:paddingTop="5dp"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="5dp"
-                    android:text="群消息设置" />
+                    android:text="群消息设置"
+                    />
+
                 <TextView
                     android:id="@+id/msg_setting_selected"
                     android:layout_width="wrap_content"
@@ -336,7 +377,9 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/msg_selected"
                     android:layout_marginRight="10dp"
-                    android:text="" />
+                    android:text=""
+                    />
+
                 <ImageView
                     android:id="@+id/msg_selected"
                     android:layout_width="30dp"
@@ -344,7 +387,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="5dp"
                     android:src="@drawable/add_member"
-                    android:background="@drawable/common_tab_bg"/>
+                    android:background="@drawable/common_tab_bg"
+                    />
             </RelativeLayout>
 
             <LinearLayout
@@ -352,7 +396,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingTop="20dp" >
+                android:paddingTop="20dp"
+                >
 
                 <Button
                     android:id="@+id/join_group"
@@ -367,7 +412,8 @@
                     android:text="加入该群"
                     android:textColor="@color/white"
                     android:textSize="20sp"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    />
 
                 <Button
                     android:id="@+id/dismiss_group"
@@ -382,7 +428,8 @@
                     android:padding="0dp"
                     android:text="解散该群"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    />
 
                 <Button
                     android:id="@+id/leave_group"
@@ -398,7 +445,8 @@
                     android:text="退出群"
                     android:textColor="@color/white"
                     android:textSize="20sp"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
@@ -409,6 +457,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         layout="@layout/dialog_delete_member"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 
 </RelativeLayout>

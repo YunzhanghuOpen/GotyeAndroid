@@ -5,9 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="text_ack_msg">已读</string>
     <string name="text_delivered_msg">已发送</string>
-    
-        <style name="PopupAnimation" mce_bogus="1" parent="android:Animation"> 
-        <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item> 
-        <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item> 
+
+    <style name="PopupAnimation" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/slide_in_from_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_to_bottom</item>
     </style>
 </resources>

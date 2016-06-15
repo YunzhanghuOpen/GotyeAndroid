@@ -1,4 +1,3 @@
-
 package com.open_demo.util;
 
 public class Config {
@@ -9,20 +8,19 @@ public class Config {
      */
 
     private static int CURRENT_LANGUAGE_INDEX = 0;
-    
+
     /**
      * 当前垂直领域类型
      */
-    
+
     private static int CURRENT_PROP_INDEX = 0;
 
-  
 
     public static int getCurrentLanguageIndex() {
         return CURRENT_LANGUAGE_INDEX;
     }
 
-        
+
     public static int getCurrentPropIndex() {
         return CURRENT_PROP_INDEX;
     }
@@ -36,7 +34,7 @@ public class Config {
      * 播放结束音
      */
     public static boolean PLAY_END_SOUND = true;
-    
+
     /**
      * 对话框提示音
      */

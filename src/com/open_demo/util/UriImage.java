@@ -1,7 +1,4 @@
 package com.open_demo.util;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -13,6 +10,10 @@ import android.provider.MediaStore.Images;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class UriImage {
     private static final String TAG = "uri/image";
@@ -71,7 +72,7 @@ public class UriImage {
     private void buildSrcFromPath() {
         mSrc = mPath.substring(mPath.lastIndexOf('/') + 1);
 
-        if(mSrc.startsWith(".") && mSrc.length() > 1) {
+        if (mSrc.startsWith(".") && mSrc.length() > 1) {
             mSrc = mSrc.substring(1);
         }
 
@@ -132,13 +133,13 @@ public class UriImage {
      * that the content type of the resulting PduPart may not be the same as the content type of
      * this UriImage; always call {@link PduPart#getContentType()} to get the new content type.
      *
-     * @param widthLimit The width limit, in pixels
+     * @param widthLimit  The width limit, in pixels
      * @param heightLimit The height limit, in pixels
-     * @param byteLimit The binary size limit, in bytes
+     * @param byteLimit   The binary size limit, in bytes
      * @return A new PduPart containing the resized image data
      */
     public byte[] getResizedImage(int widthLimit, int heightLimit, int byteLimit) {
-        byte[] data =  ImageUtils.getResizedImageData(mWidth, mHeight,
+        byte[] data = ImageUtils.getResizedImageData(mWidth, mHeight,
                 widthLimit, heightLimit, byteLimit, mUri, mContext);
         if (data == null) {
             if (LOCAL_LOGV) {
