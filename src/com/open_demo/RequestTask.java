@@ -53,7 +53,6 @@ public class RequestTask extends AsyncTask<String, String, String> {
         String mockUrl = "http://rpv2.yunzhanghu.com/api/sign?duid=" + userID;
         HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(mockUrl);
-        // replace with your url
         HttpResponse response;
         try {
             response = client.execute(request);
