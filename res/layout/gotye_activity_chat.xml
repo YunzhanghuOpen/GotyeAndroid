@@ -183,7 +183,6 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:visibility="gone"
-            android:weightSum="4"
             >
 
             <ImageView
@@ -200,6 +199,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:src="@drawable/take_photo_selector"
+                />
+            <ImageView
+                android:id="@+id/to_redpacket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/g_chat_redpacket_selector"
                 />
 
             <ImageView
