@@ -618,14 +618,14 @@ public class ChatMessageAdapter extends BaseAdapter {
                 if(isRedPacketMessage(message)!=null){
 
                     return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
-                            .inflate(R.layout.layout_row_received_redpacket, null)
-                            : inflater.inflate(R.layout.layout_row_sent_redpacket, null);
+                            .inflate(R.layout.gotye_row_received_redpacket, null)
+                            : inflater.inflate(R.layout.gotye_row_sent_redpacket, null);
 
                 }
                 else if(isRedPacketAckedMessage(message)!=null){
 
                     return   inflater
-                            .inflate(R.layout.layout_row_received_redpacket_ack, null);
+                            .inflate(R.layout.gotye_row_redpacket_ack, null);
 
                 }
 
