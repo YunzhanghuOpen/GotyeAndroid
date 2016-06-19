@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,8 +14,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
+import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTargetType;
 import com.gotye.api.GotyeMessage;
@@ -34,6 +39,11 @@ import com.open_demo.util.ToastUtil;
 import java.io.File;
 import java.util.List;
 
+import utils.RedPacketConstant;
+import utils.RedPacketUtil;
+import utils.RedPacketUtil.OpenRedPacketSuccess;
+
+
 public class ChatMessageAdapter extends BaseAdapter {
 
     public static final int TYPE_RECEIVE_TEXT = 0;
@@ -45,6 +55,13 @@ public class ChatMessageAdapter extends BaseAdapter {
     public static final int TYPE_SEND_IMAGE = 5;
     public static final int TYPE_SEND_VOICE = 6;
     public static final int TYPE_SEND_USER_DATA = 7;
+
+
+    //收发红包的type
+    public static final int TYPE_SEND_REDPACKET = 8;
+    public static final int TYPE_RECEIVE_REDPACKET = 9;
+    //红包回执
+    public static final int TYPE_RECEIVE_REDPACKET_ACK = 10;
 
     public static final int MESSAGE_DIRECT_RECEIVE = 1;
     public static final int MESSAGE_DIRECT_SEND = 0;
@@ -125,6 +142,17 @@ public class ChatMessageAdapter extends BaseAdapter {
     public int getItemViewType(int position) {
         GotyeMessage message = getItem(position);
         if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
+           if(isRedPacketMessage(message)!=null){
+
+
+               return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_REDPACKET
+                       : TYPE_SEND_REDPACKET;
+           }else if(isRedPacketAckedMessage(message)!=null){
+
+               return TYPE_RECEIVE_REDPACKET_ACK;
+           }
+
+
             return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_TEXT
                     : TYPE_SEND_TEXT;
         }
@@ -145,12 +173,14 @@ public class ChatMessageAdapter extends BaseAdapter {
     }
 
     public int getViewTypeCount() {
-        return 8;
+        return 11;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final GotyeMessage message = getItem(position);
+        JSONObject jsonRedPacket=isRedPacketMessage(message);
+        JSONObject jsonRedPacketAcked=isRedPacketAckedMessage(message);
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -188,7 +218,23 @@ public class ChatMessageAdapter extends BaseAdapter {
                         .findViewById(R.id.extra_data);
                 holder.tv_delivered = (TextView) convertView
                         .findViewById(R.id.tv_delivered);
-            } else {
+            } else if(message.getType() == GotyeMessageType.GotyeMessageTypeText&&jsonRedPacket!=null){
+
+
+                holder.head_iv = (ImageView) convertView
+                        .findViewById(R.id.iv_userhead);
+                //红包相关
+                holder.bubble= (RelativeLayout) convertView
+                        .findViewById(R.id.bubble);
+                holder.tv_money_greeting = (TextView) convertView
+                        .findViewById(R.id.tv_money_greeting);
+                holder.tv_sponsor_name = (TextView) convertView
+                        .findViewById(R.id.tv_sponsor_name);
+
+            }else if(message.getType() == GotyeMessageType.GotyeMessageTypeText&&jsonRedPacketAcked!=null){
+
+
+            }else {
                 holder.pb = (ProgressBar) convertView
                         .findViewById(R.id.pb_sending);
                 holder.staus_iv = (ImageView) convertView
@@ -202,6 +248,8 @@ public class ChatMessageAdapter extends BaseAdapter {
                         .findViewById(R.id.tv_userid);
                 holder.tv_delivered = (TextView) convertView
                         .findViewById(R.id.tv_delivered);
+
+
             }
             convertView.setTag(holder);
         } else {
@@ -214,6 +262,23 @@ public class ChatMessageAdapter extends BaseAdapter {
                 break;
             case GotyeMessageTypeAudio: // 语音
                 handleVoiceMessage(message, holder, position, convertView);
+                break;
+            case GotyeMessageTypeText: // 文本
+
+                if(jsonRedPacket!=null){
+                    //红包消息
+                    handleRedPacketMessage(message, holder, position,convertView,jsonRedPacket);
+
+                }else if(jsonRedPacketAcked!=null){
+                    //红包回执消息
+                    handleRedPacketAckedMessage(message, holder, position,convertView);
+                }else{
+                    //普通文本消息
+                    handleTextMessage(message, holder, position);
+                }
+
+
+
                 break;
             default:
                 handleTextMessage(message, holder, position);
@@ -252,6 +317,66 @@ public class ChatMessageAdapter extends BaseAdapter {
             holder.head_iv.setImageResource(R.drawable.head_icon_user);
         }
         return convertView;
+    }
+    //红包消息
+    private void    handleRedPacketMessage(final GotyeMessage message, ViewHolder  holder, int position, View convertView, final JSONObject jsonRedPacket){
+
+        try {
+            String sponsorName =jsonRedPacket.getString(RedPacketConstant.EXTRA_SPONSOR_NAME);
+            String greetings = jsonRedPacket.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+            holder.tv_money_greeting.setText(greetings);
+            holder.tv_sponsor_name.setText(sponsorName);
+            holder.bubble.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    JSONObject jsonObject=new JSONObject();
+                    String toAvatarUrl=chatPage.currentLoginUser.getIcon().getUrl();
+                    String toNickName=chatPage.currentLoginUser.getNickname();
+                    toAvatarUrl=TextUtils.isEmpty(toAvatarUrl)?"none":toAvatarUrl;
+                    toNickName=TextUtils.isEmpty(toNickName)?chatPage.currentLoginUser.getName():toNickName;
+                    jsonObject.put("toAvatarUrl",toAvatarUrl);
+                    jsonObject.put("toNickName",toNickName);
+                    jsonObject.put("toUserId",chatPage.currentLoginUser.getName());
+                    jsonObject.put("toAvatarUrl",toAvatarUrl);
+                    if(getDirect(message)==MESSAGE_DIRECT_RECEIVE){
+                        jsonObject.put("messageDirect",RedPacketUtil.MESSAGE_DIRECT_RECEIVE);
+                    }else{
+                        jsonObject.put("messageDirect",RedPacketUtil.MESSAGE_DIRECT_SEND);
+                    }
+                    String moneyID=jsonRedPacket.getString(RPConstant.EXTRA_CHECK_MONEY_ID);
+                    jsonObject.put(RPConstant.EXTRA_CHECK_MONEY_ID,moneyID)   ;
+                    if(chatPage.chatType==0){
+
+                        jsonObject.put("chatType",1);
+                    }else if(chatPage.chatType==2){
+
+                        jsonObject.put("chatType",2);
+                    }
+
+                    RedPacketUtil.openRedPacket(chatPage,jsonObject,new OpenRedPacketSuccess(){
+
+                        @Override
+                        public void onSuccess(String senderId, String senderNickname) {
+                            chatPage.sendRedPacketAckMessage(senderId,senderNickname);
+                        }
+                    });
+
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+    }
+    //红包回执消息
+    private void    handleRedPacketAckedMessage(GotyeMessage message,ViewHolder  holder, int position,View convertView){
+
+
+
     }
 
     private void handleImageMessage(final GotyeMessage message,
@@ -488,6 +613,27 @@ public class ChatMessageAdapter extends BaseAdapter {
                 return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
                         .inflate(R.layout.layout_row_received_message, null)
                         : inflater.inflate(R.layout.layout_row_sent_message, null);
+            case GotyeMessageTypeText:
+
+                if(isRedPacketMessage(message)!=null){
+
+                    return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
+                            .inflate(R.layout.layout_row_received_redpacket, null)
+                            : inflater.inflate(R.layout.layout_row_sent_redpacket, null);
+
+                }
+                else if(isRedPacketAckedMessage(message)!=null){
+
+                    return   inflater
+                            .inflate(R.layout.layout_row_received_redpacket_ack, null);
+
+                }
+
+
+
+                return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
+                        .inflate(R.layout.layout_row_received_message, null)
+                        : inflater.inflate(R.layout.layout_row_sent_message, null);
             default:
                 return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
                         .inflate(R.layout.layout_row_received_message, null)
@@ -615,6 +761,12 @@ public class ChatMessageAdapter extends BaseAdapter {
         TextView tv_file_name;
         TextView tv_file_size;
         TextView tv_file_download_state;
+
+        //红包消息相关的
+        RelativeLayout  bubble;
+        TextView tv_money_greeting;
+        TextView tv_sponsor_name;
+
     }
 
     public void refreshData(List<GotyeMessage> list) {
@@ -622,4 +774,60 @@ public class ChatMessageAdapter extends BaseAdapter {
         this.messageList = list;
         notifyDataSetChanged();
     }
+
+
+
+    private JSONObject isRedPacketMessage(GotyeMessage message){
+        JSONObject rpJSON=null;
+
+        if(message.getType()==GotyeMessageType.GotyeMessageTypeText){
+
+            // 设置内容
+            String extraData = message.getExtraData() == null ? null : new String(
+                    message.getExtraData());
+            if(extraData!=null){
+
+                try {
+                    JSONObject jsonObject=JSONObject.parseObject(extraData);
+                    if(jsonObject!=null&&jsonObject.containsKey(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)&&jsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)){
+
+                        rpJSON=jsonObject;
+                    }
+                }catch (JSONException e){
+
+                    Log.e("JSONExceptionr",e.toString());
+                }
+            }
+        }
+
+
+        return rpJSON;
+    }
+
+    private JSONObject isRedPacketAckedMessage(GotyeMessage message){
+        JSONObject jsonRedPacketAcked=null;
+        if(message.getType()==GotyeMessageType.GotyeMessageTypeText){
+
+            // 设置内容
+            String extraData = message.getExtraData() == null ? null : new String(
+                    message.getExtraData());
+            if(extraData!=null){
+                try {
+                    JSONObject jsonObject=JSONObject.parseObject(extraData);
+                    if(jsonObject!=null&&jsonObject.containsKey(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)&&jsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)){
+
+                        jsonRedPacketAcked=jsonObject;
+                    }
+                }catch (JSONException e){
+
+                    Log.e("JSONExceptionr",e.toString());
+                }
+            }
+        }
+
+
+        return jsonRedPacketAcked;
+    }
+
+
 }
