@@ -60,6 +60,7 @@ public class WelcomePage extends FragmentActivity implements OnGestureListener {
         boolean hasLogin = MyApplication.getHasLogin(this);
         if (hasUserName != null && hasLogin == true) {
             if (state == GotyeUser.NETSTATE_ONLINE || state == GotyeUser.NETSTATE_OFFLINE) {
+                new RequestTask(getApplicationContext(),hasUserName).execute();
                 Intent i = new Intent(this, MainActivity.class);
                 startActivity(i);
                 //启动service保存service长期活动
@@ -183,10 +184,9 @@ public class WelcomePage extends FragmentActivity implements OnGestureListener {
                 String hasUserName = user1[0];
                 String hasPassWord = user1[1];
                 LoginPage.saveUser(WelcomePage.this, hasUserName, hasPassWord, true);
-
+                new RequestTask(getApplicationContext(),hasUserName).execute();
                 Intent i = new Intent(WelcomePage.this, MainActivity.class);
                 startActivity(i);
-
                 if (code == GotyeStatusCode.CodeOfflineLoginOK) {
                     Toast.makeText(WelcomePage.this, "您当前处于离线状态", Toast.LENGTH_SHORT).show();
                 } else if (code == GotyeStatusCode.CodeOK) {
