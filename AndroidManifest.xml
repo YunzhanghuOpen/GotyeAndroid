@@ -106,6 +106,43 @@
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
 
+        <!--红包相关界面-->
+        <activity
+            android:name="com.easemob.redpacketui.ui.activity.RPRedPacketActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan|stateVisible" />
+        <activity
+
+            android:name="com.easemob.redpacketui.ui.activity.RPDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name="com.easemob.redpacketui.ui.activity.RPRecordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name="com.easemob.redpacketui.ui.activity.RPWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="com.easemob.redpacketui.ui.activity.RPChangeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="com.easemob.redpacketui.ui.activity.RPBankCardActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
+
+
+
         <receiver android:name="com.open_demo.StartServiceReceiver" >
             <intent-filter android:priority="1000" >
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
