@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.easemob.redpacketsdk.RedPacket;
 import com.gotye.api.GotyeUser;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class MyApplication extends Application {
         loadSelectedKey(this);
         CrashApplication.getInstance(this).onCreate();
         spf = getSharedPreferences(SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
+        RedPacket.getInstance().initContext(this);
     }
 
     void onLoginCallBack(int code, GotyeUser currentLoginUser) {
