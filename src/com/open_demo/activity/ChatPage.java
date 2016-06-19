@@ -2,6 +2,7 @@ package com.open_demo.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -35,6 +37,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -60,6 +64,8 @@ import com.open_demo.util.URIUtil;
 import com.open_demo.view.RTPullListView;
 import com.open_demo.view.RTPullListView.OnRefreshListener;
 
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -68,13 +74,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatPage extends Activity implements OnClickListener {
+import utils.RedPacketConstant;
+import utils.RedPacketUtil;
+
+public class ChatPage extends FragmentActivity implements OnClickListener {
     public static final int REALTIMEFROM_OTHER = 2;
     public static final int REALTIMEFROM_SELF = 1;
     public static final int REALTIMEFROM_NO = 0;
     private static final int REQUEST_PIC = 1;
     private static final int REQUEST_CAMERA = 2;
-
+    private static final int REQUEST_REDPACKET = 3;
     public static final int VOICE_MAX_TIME = 60 * 1000;
     private RTPullListView pullListView;
     public ChatMessageAdapter adapter;
@@ -82,8 +91,9 @@ public class ChatPage extends Activity implements OnClickListener {
     private GotyeRoom o_room, room;
     private GotyeGroup o_group, group;
     private GotyeCustomerService o_cserver, cserver;
-    private GotyeUser currentLoginUser;
+    public GotyeUser currentLoginUser;
     private ImageView voice_text_chage;
+    private ImageView to_redpacket;
     private Button pressToVoice;
     private EditText textMessage;
     private ImageView showMoreType;
@@ -110,6 +120,9 @@ public class ChatPage extends Activity implements OnClickListener {
     public boolean makingVoiceMessage = false;
     public GotyeAPI api = GotyeAPI.getInstance();
     boolean isClick = false;
+
+    //群组人数
+    private int groupMembersCount=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +154,7 @@ public class ChatPage extends Activity implements OnClickListener {
             }
         } else if (chatType == 2) {
             api.activeSession(group);
+            api.reqGroupMemberList(group, 0);
             loadData();
         } else if (chatType == 3) {
             api.activeSession(cserver);
@@ -170,13 +184,18 @@ public class ChatPage extends Activity implements OnClickListener {
         stopRealTalk = (TextView) realTalkView
                 .findViewById(R.id.stop_real_talk);
         stopRealTalk.setOnClickListener(this);
-
+        //增加红包按钮
+        to_redpacket= (ImageView) findViewById(R.id.to_redpacket);
         if (user != null) {
             chatType = 0;
             title.setText("和 " + user.getName() + " 聊天");
+            //红包单聊群聊显示，其他不显示
+            to_redpacket.setVisibility(View.VISIBLE);
         } else if (room != null) {
             chatType = 1;
             title.setText("聊天室：" + room.getRoomID());
+            //红包单聊群聊显示，其他不显示
+            to_redpacket.setVisibility(View.GONE);
         } else if (group != null) {
             chatType = 2;
             String titleText = null;
@@ -191,12 +210,17 @@ public class ChatPage extends Activity implements OnClickListener {
                 }
             }
             title.setText("群：" + titleText);
+            //红包单聊群聊显示，其他不显示
+            to_redpacket.setVisibility(View.VISIBLE);
         } else if (cserver != null) {
             chatType = 3;
             title.setText("和客服" + String.valueOf(cserver.getGroupId()) + "聊天");
+            //红包单聊群聊显示，其他不显示
+            to_redpacket.setVisibility(View.GONE);
         }
 
         voice_text_chage = (ImageView) findViewById(R.id.send_voice);
+
         pressToVoice = (Button) findViewById(R.id.press_to_voice_chat);
         textMessage = (EditText) findViewById(R.id.text_msg_input);
         showMoreType = (ImageView) findViewById(R.id.more_type);
@@ -204,6 +228,8 @@ public class ChatPage extends Activity implements OnClickListener {
 
         moreTypeLayout.findViewById(R.id.to_gallery).setOnClickListener(this);
         moreTypeLayout.findViewById(R.id.to_camera).setOnClickListener(this);
+        to_redpacket.setOnClickListener(this);
+
         moreTypeLayout.findViewById(R.id.voice_to_text)
                 .setOnClickListener(this);
         moreTypeLayout.findViewById(R.id.real_time_voice_chat)
@@ -340,6 +366,61 @@ public class ChatPage extends Activity implements OnClickListener {
             refreshToTail();
         }
     }
+
+    private void sendRedPacketMessage(Intent data){
+        String greetings = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+        String moneyID = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_ID);
+        String content="[" + getResources().getString(R.string.gotye_luckymoney) + "]" + greetings;
+
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE,true);
+        jsonObject.put(RedPacketConstant.EXTRA_SPONSOR_NAME, getResources().getString(R.string.gotye_luckymoney));
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_GREETING,greetings);
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_ID,moneyID);
+
+        GotyeMessage toSend = null;
+        if (chatType == 0) {
+            toSend = GotyeMessage.createTextMessage(currentLoginUser,
+                    o_user, content);
+        }   else if (chatType == 2) {
+            toSend = GotyeMessage.createTextMessage(currentLoginUser,
+                    o_group, content);
+        }
+
+        toSend.putExtraData(jsonObject.toJSONString().getBytes());
+        // putExtre(toSend);
+        int code = api.sendMessage(toSend);
+        Log.d("", String.valueOf(code));
+        adapter.addMsgToBottom(toSend);
+        refreshToTail();
+
+    }
+    public void sendRedPacketAckMessage(String senderId,String senderNickName){
+        JSONObject jsonObject=new JSONObject();
+        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE,true);
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME, senderNickName);
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID,senderId);
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME,currentLoginUser.getNickname());
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID,currentLoginUser.getName());
+        String  content="[" + getResources().getString(R.string.gotye_luckymoney) + "]" ;
+        GotyeMessage toSend = null;
+        if (chatType == 0) {
+            toSend = GotyeMessage.createTextMessage(currentLoginUser,
+                    o_user, content);
+        }   else if (chatType == 2) {
+            toSend = GotyeMessage.createTextMessage(currentLoginUser,
+                    o_group, content);
+        }
+
+        toSend.putExtraData(jsonObject.toJSONString().getBytes());
+        // putExtre(toSend);
+        int code = api.sendMessage(toSend);
+        Log.d("", String.valueOf(code));
+        adapter.addMsgToBottom(toSend);
+        refreshToTail();
+
+    }
+
 
     // 从assets中读取文件写入到额外数据中
     private void putExtre(GotyeMessage msg) {
@@ -722,14 +803,54 @@ public class ChatPage extends Activity implements OnClickListener {
             case R.id.stop_real_talk:
                 api.stopTalk();
                 break;
+            case R.id.to_redpacket:
+                toRedPacket();
+                break;
             default:
                 break;
         }
+    }
+    //点击红包，传值到红包sdk
+    private void  toRedPacket(){
+        //传递到sdk里的数据
+        JSONObject  jsonObject=new JSONObject();
+       //传递参数到红包sdk：发送者头像url，昵称（缺失则传id）
+        String fromAvatarUrl=currentLoginUser.getIcon().getUrl();
+
+        String fromNickName=currentLoginUser.getNickname();
+
+        fromAvatarUrl=  TextUtils.isEmpty(fromAvatarUrl)?"none":fromAvatarUrl;
+        fromNickName=  TextUtils.isEmpty(fromNickName)?currentLoginUser.getName():fromNickName;
+        jsonObject.put("fromAvatarUrl",fromAvatarUrl);
+        jsonObject.put("fromNickName",fromNickName);
+
+        if(chatType==0){
+            //如果是单聊传递对方id
+            jsonObject.put("userId",user.getName());
+            jsonObject.put("chatType",1);
+        }else{
+            //如果是群聊传递群id和群人数
+            jsonObject.put("groupId",group.getGroupID());
+            jsonObject.put("groupMembersCount",groupMembersCount);
+            jsonObject.put("chatType",2);
+        }
+
+
+
+
+
+        RedPacketUtil.startRedPacketActivityForResult(this,jsonObject, REQUEST_REDPACKET);
     }
 
     public void showImagePrev(GotyeMessage message) {
         hideKeyboard();
     }
+
+
+
+
+
+
 
     public void realTimeTalk() {
         if (onRealTimeTalkFrom > 0) {
@@ -798,6 +919,14 @@ public class ChatPage extends Activity implements OnClickListener {
 
                 if (cameraFile != null && cameraFile.exists())
                     sendPicture(cameraFile.getAbsolutePath());
+            }
+        }else if(requestCode==REQUEST_REDPACKET){
+
+            if (resultCode == RESULT_OK) {
+                if (data != null){
+                    sendRedPacketMessage(data);
+                }
+
             }
         }
         // TODO 获取图片失败
@@ -919,6 +1048,7 @@ public class ChatPage extends Activity implements OnClickListener {
 
         @Override
         public void onReceiveMessage(GotyeMessage message) {
+
             // GotyeChatManager.getInstance().insertChatMessage(message);
             if (chatType == 0) {
                 if (isMyMessage(message)) {
@@ -1190,5 +1320,14 @@ public class ChatPage extends Activity implements OnClickListener {
             // TODO Auto-generated method stub
             setErrorTip(-1);
         }
+
+
+
+        @Override
+        public void onGetGroupMemberList(int code, GotyeGroup group, int pagerIndex, List<GotyeUser> allList,
+                                         List<GotyeUser> curList) {
+            System.out.println("11--------->>.");
+            groupMembersCount=allList.size();
+         }
     };
 }
