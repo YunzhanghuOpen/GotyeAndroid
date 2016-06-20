@@ -31,6 +31,7 @@ import com.open_demo.activity.ChatPage;
 import com.open_demo.activity.ShowBigImage;
 import com.open_demo.activity.UserInfoPage;
 import com.open_demo.util.BitmapUtil;
+import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.GotyeVoicePlayClickPlayListener;
 import com.open_demo.util.ImageCache;
 import com.open_demo.util.TimeUtil;
@@ -70,7 +71,7 @@ public class ChatMessageAdapter extends BaseAdapter {
     private List<GotyeMessage> messageList;
 
     private LayoutInflater inflater;
-    private GotyeUser currentLoginName;
+
     private GotyeAPI api;
 
     public ChatMessageAdapter(ChatPage activity, List<GotyeMessage> messageList) {
@@ -78,7 +79,7 @@ public class ChatMessageAdapter extends BaseAdapter {
         this.messageList = messageList;
         inflater = activity.getLayoutInflater();
         api = GotyeAPI.getInstance();
-        currentLoginName = api.getLoginUser();
+
     }
 
     public void addMsgToBottom(GotyeMessage msg) {
@@ -142,12 +143,12 @@ public class ChatMessageAdapter extends BaseAdapter {
     public int getItemViewType(int position) {
         GotyeMessage message = getItem(position);
         if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
-           if(isRedPacketMessage(message)!=null){
+           if(CheckRedPacketMessageUtil.isRedPacketMessage(message)!=null){
 
 
                return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_REDPACKET
                        : TYPE_SEND_REDPACKET;
-           }else if(isRedPacketAckedMessage(message)!=null){
+           }else if(CheckRedPacketMessageUtil.isRedPacketAckedMessage(message)!=null){
 
                return TYPE_RECEIVE_REDPACKET_ACK;
            }
@@ -179,8 +180,8 @@ public class ChatMessageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final GotyeMessage message = getItem(position);
-        JSONObject jsonRedPacket=isRedPacketMessage(message);
-        JSONObject jsonRedPacketAcked=isRedPacketAckedMessage(message);
+        JSONObject jsonRedPacket=CheckRedPacketMessageUtil.isRedPacketMessage(message);
+        JSONObject jsonRedPacketAcked=CheckRedPacketMessageUtil.isRedPacketAckedMessage(message);
         final ViewHolder holder;
         if (convertView == null) {
             holder = new ViewHolder();
@@ -233,7 +234,11 @@ public class ChatMessageAdapter extends BaseAdapter {
 
             }else if(message.getType() == GotyeMessageType.GotyeMessageTypeText&&jsonRedPacketAcked!=null){
 
+                holder.head_iv = (ImageView) convertView
+                        .findViewById(R.id.iv_userhead);
 
+                holder.tv_money_msg = (TextView) convertView
+                        .findViewById(R.id.tv_money_msg);
             }else {
                 holder.pb = (ProgressBar) convertView
                         .findViewById(R.id.pb_sending);
@@ -271,7 +276,7 @@ public class ChatMessageAdapter extends BaseAdapter {
 
                 }else if(jsonRedPacketAcked!=null){
                     //红包回执消息
-                    handleRedPacketAckedMessage(message, holder, position,convertView);
+                    handleRedPacketAckedMessage(message, holder, position,jsonRedPacketAcked);
                 }else{
                     //普通文本消息
                     handleTextMessage(message, holder, position);
@@ -373,7 +378,25 @@ public class ChatMessageAdapter extends BaseAdapter {
 
     }
     //红包回执消息
-    private void    handleRedPacketAckedMessage(GotyeMessage message,ViewHolder  holder, int position,View convertView){
+    private void    handleRedPacketAckedMessage(GotyeMessage message,ViewHolder  holder, int position,JSONObject jsonObject){
+
+        String currentUserId =chatPage.currentLoginUser.getName();   //当前登陆用户id
+        String recieveUserId =  jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
+        String recieveUserNick=jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+        String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
+        String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者昵称
+        //发送者和领取者都是自己-
+        if(currentUserId.equals(recieveUserId)&&currentUserId.equals(sendUserId)){
+            holder.tv_money_msg.setText(chatPage.getResources().getString(R.string.money_msg_take_money));
+        }else if(currentUserId.equals(sendUserId)){
+            //我仅仅是发送者
+            holder.tv_money_msg.setText(String.format(chatPage.getResources().getString(R.string.money_msg_someone_take_money), recieveUserNick));
+        }else if(currentUserId.equals(recieveUserId)){
+            //我仅仅是接收者
+            holder.tv_money_msg.setText(String.format(chatPage.getResources().getString(R.string.money_msg_take_someone_money), sendUserNick));
+        }
+
+
 
 
 
@@ -615,14 +638,14 @@ public class ChatMessageAdapter extends BaseAdapter {
                         : inflater.inflate(R.layout.layout_row_sent_message, null);
             case GotyeMessageTypeText:
 
-                if(isRedPacketMessage(message)!=null){
+                if(CheckRedPacketMessageUtil.isRedPacketMessage(message)!=null){
 
                     return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
                             .inflate(R.layout.gotye_row_received_redpacket, null)
                             : inflater.inflate(R.layout.gotye_row_sent_redpacket, null);
 
                 }
-                else if(isRedPacketAckedMessage(message)!=null){
+                else if(CheckRedPacketMessageUtil.isRedPacketAckedMessage(message)!=null){
 
                     return   inflater
                             .inflate(R.layout.gotye_row_redpacket_ack, null);
@@ -710,13 +733,13 @@ public class ChatMessageAdapter extends BaseAdapter {
 
     private int getDirect(GotyeMessage message) {
         if (message.getSender().getType() == GotyeChatTargetType.GotyeChatTargetTypeCustomerService) {
-            if (message.getSender().getId() == (currentLoginName.getId())) {
+            if (message.getSender().getId() == (chatPage.currentLoginUser.getId())) {
                 return MESSAGE_DIRECT_SEND;
             } else {
                 return MESSAGE_DIRECT_RECEIVE;
             }
         } else {
-            if (message.getSender().getName().equals(currentLoginName.getName())) {
+            if (message.getSender().getName().equals(chatPage.currentLoginUser.getName())) {
                 return MESSAGE_DIRECT_SEND;
             } else {
                 return MESSAGE_DIRECT_RECEIVE;
@@ -766,6 +789,7 @@ public class ChatMessageAdapter extends BaseAdapter {
         RelativeLayout  bubble;
         TextView tv_money_greeting;
         TextView tv_sponsor_name;
+        TextView  tv_money_msg;
 
     }
 
@@ -776,58 +800,6 @@ public class ChatMessageAdapter extends BaseAdapter {
     }
 
 
-
-    private JSONObject isRedPacketMessage(GotyeMessage message){
-        JSONObject rpJSON=null;
-
-        if(message.getType()==GotyeMessageType.GotyeMessageTypeText){
-
-            // 设置内容
-            String extraData = message.getExtraData() == null ? null : new String(
-                    message.getExtraData());
-            if(extraData!=null){
-
-                try {
-                    JSONObject jsonObject=JSONObject.parseObject(extraData);
-                    if(jsonObject!=null&&jsonObject.containsKey(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)&&jsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)){
-
-                        rpJSON=jsonObject;
-                    }
-                }catch (JSONException e){
-
-                    Log.e("JSONExceptionr",e.toString());
-                }
-            }
-        }
-
-
-        return rpJSON;
-    }
-
-    private JSONObject isRedPacketAckedMessage(GotyeMessage message){
-        JSONObject jsonRedPacketAcked=null;
-        if(message.getType()==GotyeMessageType.GotyeMessageTypeText){
-
-            // 设置内容
-            String extraData = message.getExtraData() == null ? null : new String(
-                    message.getExtraData());
-            if(extraData!=null){
-                try {
-                    JSONObject jsonObject=JSONObject.parseObject(extraData);
-                    if(jsonObject!=null&&jsonObject.containsKey(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)&&jsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)){
-
-                        jsonRedPacketAcked=jsonObject;
-                    }
-                }catch (JSONException e){
-
-                    Log.e("JSONExceptionr",e.toString());
-                }
-            }
-        }
-
-
-        return jsonRedPacketAcked;
-    }
 
 
 }
