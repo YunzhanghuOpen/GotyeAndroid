@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -23,21 +24,25 @@ import com.gotye.api.GotyeUser;
 import com.open_demo.R;
 import com.open_demo.main.MessageFragment;
 import com.open_demo.util.BitmapUtil;
+import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.ImageCache;
 import com.open_demo.util.TimeUtil;
 
 import java.util.List;
 
+import utils.RedPacketConstant;
+
 public class MessageListAdapter extends BaseAdapter {
     private MessageFragment messageFragment;
     private List<GotyeChatTarget> sessions;
     private GotyeAPI api;
-
+   private  GotyeUser currentLoginUser;
     public MessageListAdapter(MessageFragment messageFragment,
                               List<GotyeChatTarget> sessions) {
         this.messageFragment = messageFragment;
         this.sessions = sessions;
         api = GotyeAPI.getInstance();
+        currentLoginUser=api.getLoginUser();
     }
 
     static class ViewHolder {
@@ -130,7 +135,39 @@ public class MessageListAdapter extends BaseAdapter {
             viewHolder.time.setText(lastMsgTime);
 
             if (lastMsg.getType() == GotyeMessageType.GotyeMessageTypeText) {
-                content = "文本消息：" + lastMsg.getText();
+
+                JSONObject redpacketJSON= CheckRedPacketMessageUtil.isRedPacketMessage(lastMsg);
+                JSONObject redpacketAckJSON=CheckRedPacketMessageUtil.isRedPacketAckedMessage(lastMsg);
+                if(redpacketJSON!=null){
+                    String greetings = redpacketJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+                    content = "红包消息:"+lastMsg.getSender().getName() +greetings;
+                }else if(redpacketAckJSON!=null){
+                    String currentUserId = currentLoginUser.getName();   //当前登陆用户id
+                    String recieveUserId =  redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
+                    String recieveUserNick=redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+                     String sendUserId = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
+                    String sendUserNick = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者昵称
+                    //发送者和领取者都是自己-
+
+                    if(currentUserId.equals(recieveUserId)&&currentUserId.equals(sendUserId)){
+                        content=messageFragment.getActivity().getResources().getString(R.string.money_msg_take_money);
+
+                    }else if(currentUserId.equals(sendUserId)){
+                        //我仅仅是发送者
+                        content=String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_someone_take_money), recieveUserNick);
+                    }else if(currentUserId.equals(recieveUserId)){
+                        //我仅仅是接收者
+                        content=String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_take_someone_money), sendUserNick);
+                    }
+
+
+                    content = "红包消息:"+content;
+                }else{
+                    content = "文本消息：" + ":" + lastMsg.getText();
+
+                }
+
+
             } else if (lastMsg.getType() == GotyeMessageType.GotyeMessageTypeImage) {
                 content = "图片消息";
             } else if (lastMsg.getType() == GotyeMessageType.GotyeMessageTypeAudio) {
