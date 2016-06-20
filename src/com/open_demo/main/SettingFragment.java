@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,6 +26,8 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.easemob.redpacketsdk.constant.RPConstant;
+import com.easemob.redpacketui.ui.activity.RPChangeActivity;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeDelegate;
 import com.gotye.api.GotyeMedia;
@@ -136,6 +139,20 @@ public class SettingFragment extends Fragment {
             public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
                 // TODO Auto-generated method stub
                 MyApplication.setNewMsgNotify(arg1, user.getName());
+            }
+        });
+
+        getView().findViewById(R.id.money_layout).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), RPChangeActivity.class);
+                String fromNickname = user.getNickname();
+                String fromAvatarUrl = user.getIcon().getUrl();
+                fromAvatarUrl = TextUtils.isEmpty(fromAvatarUrl) ? "none" : fromAvatarUrl;
+                fromNickname = TextUtils.isEmpty(fromNickname) ? user.getName() : fromNickname;
+                intent.putExtra(RPConstant.EXTRA_USER_NAME, fromNickname);
+                intent.putExtra(RPConstant.EXTRA_TO_USER_AVATAR, fromAvatarUrl);
+                startActivity(intent);
             }
         });
 //		CheckBox noTipAllGroupMessage = ((CheckBox) getView().findViewById(
