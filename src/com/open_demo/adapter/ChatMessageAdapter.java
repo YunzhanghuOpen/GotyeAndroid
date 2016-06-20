@@ -339,14 +339,12 @@ public class ChatMessageAdapter extends BaseAdapter {
                     String toNickName=chatPage.currentLoginUser.getNickname();
                     toAvatarUrl=TextUtils.isEmpty(toAvatarUrl)?"none":toAvatarUrl;
                     toNickName=TextUtils.isEmpty(toNickName)?chatPage.currentLoginUser.getName():toNickName;
-                    jsonObject.put("toAvatarUrl",toAvatarUrl);
-                    jsonObject.put("toNickName",toNickName);
-                    jsonObject.put("toUserId",chatPage.currentLoginUser.getName());
-                    jsonObject.put("toAvatarUrl",toAvatarUrl);
-                    if(getDirect(message)==MESSAGE_DIRECT_RECEIVE){
-                        jsonObject.put("messageDirect",RedPacketUtil.MESSAGE_DIRECT_RECEIVE);
+                    jsonObject.put(RedPacketConstant.KEY_TO_AVATAR_URL,toAvatarUrl);
+                    jsonObject.put(RedPacketConstant.KEY_TO_NICK_NAME,toNickName);
+                     if(getDirect(message)==MESSAGE_DIRECT_RECEIVE){
+                        jsonObject.put(RedPacketConstant.KEY_MESSAGE_DIRECT,RPConstant.MESSAGE_DIRECT_RECEIVE);
                     }else{
-                        jsonObject.put("messageDirect",RedPacketUtil.MESSAGE_DIRECT_SEND);
+                        jsonObject.put(RedPacketConstant.KEY_MESSAGE_DIRECT,RPConstant.MESSAGE_DIRECT_SEND);
                     }
                     String moneyID=jsonRedPacket.getString(RPConstant.EXTRA_CHECK_MONEY_ID);
                     jsonObject.put(RPConstant.EXTRA_CHECK_MONEY_ID,moneyID)   ;

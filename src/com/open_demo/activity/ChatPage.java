@@ -822,18 +822,18 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
 
         fromAvatarUrl=  TextUtils.isEmpty(fromAvatarUrl)?"none":fromAvatarUrl;
         fromNickName=  TextUtils.isEmpty(fromNickName)?currentLoginUser.getName():fromNickName;
-        jsonObject.put("fromAvatarUrl",fromAvatarUrl);
-        jsonObject.put("fromNickName",fromNickName);
+        jsonObject.put(RedPacketConstant.KEY_FROM_AVATAR_URL,fromAvatarUrl);
+        jsonObject.put(RedPacketConstant.KEY_FROM_NICK_NAME,fromNickName);
 
         if(chatType==0){
             //如果是单聊传递对方id
-            jsonObject.put("userId",user.getName());
-            jsonObject.put("chatType",1);
+            jsonObject.put(RedPacketConstant.KEY_USER_ID,user.getName());
+            jsonObject.put(RedPacketConstant.KEY_CHAT_TYPE,1);
         }else{
             //如果是群聊传递群id和群人数
-            jsonObject.put("groupId",group.getGroupID());
-            jsonObject.put("groupMembersCount",groupMembersCount);
-            jsonObject.put("chatType",2);
+            jsonObject.put(RedPacketConstant.KEY_GROUP_ID,group.getGroupID());
+            jsonObject.put(RedPacketConstant.KEY_GROUO_MEMBERS_COUNT,groupMembersCount);
+            jsonObject.put(RedPacketConstant.KEY_CHAT_TYPE,2);
         }
 
 
