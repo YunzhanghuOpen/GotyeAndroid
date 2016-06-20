@@ -55,6 +55,7 @@ import com.gotye.api.WhineMode;
 import com.open_demo.R;
 import com.open_demo.adapter.ChatMessageAdapter;
 import com.open_demo.main.MainActivity;
+import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.CommonUtils;
 import com.open_demo.util.GotyeVoicePlayClickPlayListener;
 import com.open_demo.util.ProgressDialogUtil;
@@ -1048,7 +1049,13 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
 
         @Override
         public void onReceiveMessage(GotyeMessage message) {
-
+            String currentUserId =currentLoginUser.getName();   //当前登陆用户id
+            if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
+                api.deleteMessage(message);
+                //TODO 删除打印
+                System.out.println("delete message------->ChatPage");
+                return;
+            }
             // GotyeChatManager.getInstance().insertChatMessage(message);
             if (chatType == 0) {
                 if (isMyMessage(message)) {
@@ -1326,8 +1333,7 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         @Override
         public void onGetGroupMemberList(int code, GotyeGroup group, int pagerIndex, List<GotyeUser> allList,
                                          List<GotyeUser> curList) {
-            System.out.println("11--------->>.");
-            groupMembersCount=allList.size();
-         }
+              groupMembersCount=allList.size();
+          }
     };
 }
