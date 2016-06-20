@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTargetType;
 import com.gotye.api.GotyeDelegate;
@@ -30,10 +31,13 @@ import com.open_demo.R;
 import com.open_demo.WelcomePage;
 import com.open_demo.util.BeepManager;
 import com.open_demo.util.BitmapUtil;
+import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.ImageCache;
 import com.open_demo.util.URIUtil;
 
 import java.util.List;
+
+import utils.RedPacketConstant;
 
 //import android.app.FragmentManager;
 //import android.app.FragmentTransaction;
@@ -60,7 +64,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     private int currentPosition = 0;
     private BeepManager beep;
     private GotyeAPI api;
-
+    public GotyeUser currentLoginUser;
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         api = GotyeAPI.getInstance();
         setContentView(R.layout.layout_main);
         api.addListener(mDelegate);
+        currentLoginUser = api.getLoginUser();
         beep = new BeepManager(MainActivity.this);
         beep.updatePrefs();
         initViews();
@@ -320,6 +325,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         // 收到消息（此处只是单纯的更新聊天历史界面，不涉及聊天消息处理，当然你也可以处理，若你非要那样做）
         @Override
         public void onReceiveMessage(GotyeMessage message) {
+
+
+
+            String currentUserId =currentLoginUser.getName();   //当前登陆用户id
+            if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
+                api.deleteMessage(message);
+                 return;
+            }
+
+
             if (returnNotify) {
                 return;
             }
