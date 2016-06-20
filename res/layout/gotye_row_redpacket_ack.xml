@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="7dp"
-            android:src="@drawable/lc_message_icon"
+            android:src="@drawable/gotye_message_icon"
             />
 
         <TextView
