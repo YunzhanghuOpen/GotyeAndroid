@@ -15,8 +15,10 @@ import java.util.Map;
 
 public class MyApplication extends Application {
     //	public static final String DEFAULT_APPKEY = "ccim1001-19f6-4bd8-9b29-e454fdbf4990";
-    public static final String DEFAULT_APPKEY = "9c236035-2bf4-40b0-bfbf-e8b6dec54928";
-    //	public static final String DEFAULT_APPKEY = "029140c7-3acc-48df-b080-17b50ea8f082";
+   // public static final String DEFAULT_APPKEY = "9c236035-2bf4-40b0-bfbf-e8b6dec54928";
+    //	public static final String DEFAULT_APPKEY = "0835b16b-1981-4e56-af09-72ce8aca5c5d";
+    public static final String DEFAULT_APPKEY = "2520e28f-7cb6-4c47-90bf-da1f854d294d";
+
     public static String APPKEY = DEFAULT_APPKEY;
     //	public static String IP = null;
     public static String IP = "120.132.60.176";
