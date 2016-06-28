@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 public class RequestTask extends AsyncTask<String, String, String> {
-    private final String TAG = "";
+    private final String TAG = "RedPakcet";
     private String userID;
     private Context context;
     private final int HANDLER_LOGIN_SUCCESS = 1;
@@ -32,10 +32,10 @@ public class RequestTask extends AsyncTask<String, String, String> {
             super.handleMessage(msg);
             switch (msg.what) {
                 case HANDLER_LOGIN_SUCCESS:
-                    System.out.println("---->红包SDK登陆成功");
+
                     break;
                 case HANDLER_LOGIN_FAILURE:
-                    System.out.println("---->红包SDK登陆失败");
+
                     break;
             }
         }
@@ -88,7 +88,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
                         new RPCallback() {
                             @Override
                             public void onSuccess() {
-                                // 进入主页面
+
                                 mHandler.obtainMessage(HANDLER_LOGIN_SUCCESS).sendToTarget();
                                 Log.e(TAG, "init Red Packet success token: " + RedPacket.getInstance().sToken);
                             }

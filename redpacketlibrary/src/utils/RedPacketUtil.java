@@ -88,7 +88,10 @@ public class RedPacketUtil {
         });
     }
 
-
+    /**
+     *
+     * 拆红包回调接口
+     */
     public interface OpenRedPacketSuccess {
 
         void onSuccess(String senderId, String senderNickname);
