@@ -152,7 +152,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String fromNickname = user.getNickname();
-                String fromAvatarUrl = user.getIcon().getUrl();
+                String fromAvatarUrl = user.getIcon().getPath();
                 fromAvatarUrl = TextUtils.isEmpty(fromAvatarUrl) ? "none" : fromAvatarUrl;
                 fromNickname = TextUtils.isEmpty(fromNickname) ? user.getName() : fromNickname;
                 RedPacketUtil.startChangeActivity(getActivity(),fromNickname,fromAvatarUrl,user.getName());
