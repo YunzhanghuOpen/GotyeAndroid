@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
+import android.text.TextUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.easemob.redpacketsdk.bean.RedPacketInfo;
 import com.easemob.redpacketsdk.constant.RPConstant;
+import com.easemob.redpacketui.ui.activity.RPChangeActivity;
 import com.easemob.redpacketui.ui.activity.RPRedPacketActivity;
 import com.easemob.redpacketui.utils.RPOpenPacketUtil;
 
@@ -97,5 +99,16 @@ public class RedPacketUtil {
         void onSuccess(String senderId, String senderNickname);
     }
 
+
+   public static  void  startChangeActivity(FragmentActivity fragmentActivity,String fromNickname ,String fromAvatarUrl,String userId){
+
+        Intent intent = new Intent(fragmentActivity, RPChangeActivity.class);
+        RedPacketInfo redPacketInfo = new RedPacketInfo();
+        redPacketInfo.fromNickName = fromNickname;
+        redPacketInfo.fromAvatarUrl = fromAvatarUrl;
+        intent.putExtra(RPConstant.EXTRA_MONEY_INFO, redPacketInfo);
+        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, AuthDataUtils.getInstance().getAuthData(userId));
+       fragmentActivity.startActivity(intent);
+    }
 
 }

@@ -5,12 +5,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.easemob.redpacketsdk.RedPacket;
+import com.easemob.redpacketsdk.bean.AuthData;
 import com.gotye.api.GotyeUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import utils.AuthDataUtils;
 
 
 public class MyApplication extends Application {
@@ -34,7 +38,6 @@ public class MyApplication extends Application {
     public static Map<Long, Integer> mapList = new HashMap<Long, Integer>();
     public static final String CONFIG = "markGroupTag";
     public static ArrayList<Long> disturbGroupIds = new ArrayList<Long>();
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,6 +45,7 @@ public class MyApplication extends Application {
         CrashApplication.getInstance(this).onCreate();
         spf = getSharedPreferences(SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
         RedPacket.getInstance().initContext(this);
+        AuthDataUtils.init(this);
     }
 
     void onLoginCallBack(int code, GotyeUser currentLoginUser) {

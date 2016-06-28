@@ -60,7 +60,7 @@ public class WelcomePage extends FragmentActivity implements OnGestureListener {
         boolean hasLogin = MyApplication.getHasLogin(this);
         if (hasUserName != null && hasLogin == true) {
             if (state == GotyeUser.NETSTATE_ONLINE || state == GotyeUser.NETSTATE_OFFLINE) {
-                new RequestTask(getApplicationContext(),hasUserName).execute();
+               new RequestTask(getApplicationContext(),hasUserName).execute();
                 Intent i = new Intent(this, MainActivity.class);
                 startActivity(i);
                 //启动service保存service长期活动
