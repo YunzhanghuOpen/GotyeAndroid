@@ -39,6 +39,10 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.easemob.redpacketsdk.bean.RPUserBean;
+import com.easemob.redpacketui.callback.GroupMemberCallback;
+import com.easemob.redpacketui.callback.NotifyGroupMemberCallback;
+import com.easemob.redpacketui.utils.RPGroupMemberUtil;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -66,12 +70,12 @@ import com.open_demo.view.RTPullListView;
 import com.open_demo.view.RTPullListView.OnRefreshListener;
 
 
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -122,8 +126,8 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
     public GotyeAPI api = GotyeAPI.getInstance();
     boolean isClick = false;
 
-    //群组人数
-    private int groupMembersCount=1;
+    //群成员列表
+    private List<GotyeUser> allUsers = new ArrayList<GotyeUser>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +190,7 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
                 .findViewById(R.id.stop_real_talk);
         stopRealTalk.setOnClickListener(this);
         //增加红包按钮
-        to_redpacket= (ImageView) findViewById(R.id.to_redpacket);
+        to_redpacket = (ImageView) findViewById(R.id.to_redpacket);
         if (user != null) {
             chatType = 0;
             title.setText("和 " + user.getName() + " 聊天");
@@ -368,22 +372,32 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         }
     }
 
-    private void sendRedPacketMessage(Intent data){
-        String greetings = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+    private void sendRedPacketMessage(Intent data) {
+        String specialReceiveId = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);
+        String redPacketType = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_TYPE);
+         String greetings = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
         String moneyID = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_ID);
-        String content="[" + getResources().getString(R.string.gotye_luckymoney) + "]" + greetings;
+        System.out.println("redPacketType------->"+redPacketType);
+        System.out.println("specialReceiveId------->"+specialReceiveId);
+        System.out.println("greetings------->"+greetings);
+        System.out.println("moneyID------->"+moneyID);
 
-        JSONObject jsonObject=new JSONObject();
-        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE,true);
+
+        String content = "[" + getResources().getString(R.string.gotye_luckymoney) + "]" + greetings;
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE, true);
         jsonObject.put(RedPacketConstant.EXTRA_SPONSOR_NAME, getResources().getString(R.string.gotye_luckymoney));
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_GREETING,greetings);
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_ID,moneyID);
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_GREETING, greetings);
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_ID, moneyID);
+        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE, redPacketType);
+        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID, specialReceiveId);
 
         GotyeMessage toSend = null;
         if (chatType == 0) {
             toSend = GotyeMessage.createTextMessage(currentLoginUser,
                     o_user, content);
-        }   else if (chatType == 2) {
+        } else if (chatType == 2) {
             toSend = GotyeMessage.createTextMessage(currentLoginUser,
                     o_group, content);
         }
@@ -396,19 +410,20 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         refreshToTail();
 
     }
-    public void sendRedPacketAckMessage(String senderId,String senderNickName){
-        JSONObject jsonObject=new JSONObject();
-        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE,true);
+
+    public void sendRedPacketAckMessage(String senderId, String senderNickName) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE, true);
         jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME, senderNickName);
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID,senderId);
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME,currentLoginUser.getNickname());
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID,currentLoginUser.getName());
-        String  content="[" + getResources().getString(R.string.gotye_luckymoney) + "]" ;
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID, senderId);
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME, currentLoginUser.getNickname());
+        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID, currentLoginUser.getName());
+        String content = "[" + getResources().getString(R.string.gotye_luckymoney) + "]";
         GotyeMessage toSend = null;
         if (chatType == 0) {
             toSend = GotyeMessage.createTextMessage(currentLoginUser,
                     o_user, content);
-        }   else if (chatType == 2) {
+        } else if (chatType == 2) {
             toSend = GotyeMessage.createTextMessage(currentLoginUser,
                     o_group, content);
         }
@@ -811,46 +826,64 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
                 break;
         }
     }
+
     //点击红包，传值到红包sdk
-    private void  toRedPacket(){
+    private void toRedPacket() {
         //传递到sdk里的数据
-        JSONObject  jsonObject=new JSONObject();
-       //传递参数到红包sdk：发送者头像url，昵称（缺失则传id）
-        String fromAvatarUrl=currentLoginUser.getIcon().getUrl();
+        JSONObject jsonObject = new JSONObject();
+        //传递参数到红包sdk：发送者头像url，昵称（缺失则传id）
+        String fromAvatarUrl = currentLoginUser.getIcon().getPath();
 
-        String fromNickName=currentLoginUser.getNickname();
+        String fromNickName = currentLoginUser.getNickname();
 
-        fromAvatarUrl=  TextUtils.isEmpty(fromAvatarUrl)?"none":fromAvatarUrl;
-        fromNickName=  TextUtils.isEmpty(fromNickName)?currentLoginUser.getName():fromNickName;
-        jsonObject.put(RedPacketConstant.KEY_FROM_AVATAR_URL,fromAvatarUrl);
-        jsonObject.put(RedPacketConstant.KEY_FROM_NICK_NAME,fromNickName);
+        fromAvatarUrl = TextUtils.isEmpty(fromAvatarUrl) ? "none" : fromAvatarUrl;
+        fromNickName = TextUtils.isEmpty(fromNickName) ? currentLoginUser.getName() : fromNickName;
+        jsonObject.put(RedPacketConstant.KEY_CURRENT_ID, currentLoginUser.getName());
+        jsonObject.put(RedPacketConstant.KEY_FROM_AVATAR_URL, fromAvatarUrl);
+        jsonObject.put(RedPacketConstant.KEY_FROM_NICK_NAME, fromNickName);
 
-        if(chatType==0){
+        if (chatType == 0) {
             //如果是单聊传递对方id
-            jsonObject.put(RedPacketConstant.KEY_USER_ID,user.getName());
-            jsonObject.put(RedPacketConstant.KEY_CHAT_TYPE,1);
-        }else{
+            jsonObject.put(RedPacketConstant.KEY_USER_ID, user.getName());
+            jsonObject.put(RedPacketConstant.KEY_CHAT_TYPE, 1);
+        } else {
             //如果是群聊传递群id和群人数
-            jsonObject.put(RedPacketConstant.KEY_GROUP_ID,group.getGroupID());
-            jsonObject.put(RedPacketConstant.KEY_GROUO_MEMBERS_COUNT,groupMembersCount);
-            jsonObject.put(RedPacketConstant.KEY_CHAT_TYPE,2);
+            jsonObject.put(RedPacketConstant.KEY_GROUP_ID, group.getGroupID());
+            jsonObject.put(RedPacketConstant.KEY_GROUO_MEMBERS_COUNT, allUsers.size());
+            jsonObject.put(RedPacketConstant.KEY_CHAT_TYPE, 2);
+            RPGroupMemberUtil.getInstance().setGroupMemberListener(new NotifyGroupMemberCallback() {
+                @Override
+                public void getGroupMember(final String groupID, final GroupMemberCallback mCallBack) {
+
+                    List<RPUserBean> userBeanList = new ArrayList<RPUserBean>();
+
+                    for (int i = 0; i < allUsers.size(); i++) {
+                        RPUserBean userBean = new RPUserBean();
+                        userBean.userId = allUsers.get(i).getName();
+                        if (userBean.userId.equals(currentLoginUser.getName())) {
+                            continue;
+                        }
+                        GotyeUser memberUser = allUsers.get(i);
+                        if (memberUser != null) {
+                            userBean.userAvatar = TextUtils.isEmpty(memberUser.getIcon().getPath()) ? "none" : memberUser.getIcon().getPath();
+                            userBean.userNickname = TextUtils.isEmpty(memberUser.getNickname()) ? memberUser.getName() : memberUser.getNickname();
+                        } else {
+                            userBean.userNickname = userBean.userId;
+                            userBean.userAvatar = "none";
+                        }
+                        userBeanList.add(userBean);
+                    }
+                    mCallBack.setGroupMember(userBeanList);
+                }
+            });
         }
 
-
-
-
-
-        RedPacketUtil.startRedPacketActivityForResult(this,jsonObject, REQUEST_REDPACKET);
+        RedPacketUtil.startRedPacketActivityForResult(this, jsonObject, REQUEST_REDPACKET);
     }
 
     public void showImagePrev(GotyeMessage message) {
         hideKeyboard();
     }
-
-
-
-
-
 
 
     public void realTimeTalk() {
@@ -921,10 +954,10 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
                 if (cameraFile != null && cameraFile.exists())
                     sendPicture(cameraFile.getAbsolutePath());
             }
-        }else if(requestCode==REQUEST_REDPACKET){
+        } else if (requestCode == REQUEST_REDPACKET) {
 
             if (resultCode == RESULT_OK) {
-                if (data != null){
+                if (data != null) {
                     sendRedPacketMessage(data);
                 }
 
@@ -1049,8 +1082,8 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
 
         @Override
         public void onReceiveMessage(GotyeMessage message) {
-            String currentUserId =currentLoginUser.getName();   //当前登陆用户id
-            if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
+            String currentUserId = currentLoginUser.getName();   //当前登陆用户id
+            if (!CheckRedPacketMessageUtil.isMyAckMessage(message, currentUserId)) {
                 api.deleteMessage(message);
                 //TODO 删除打印
                 System.out.println("delete message------->ChatPage");
@@ -1329,11 +1362,15 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         }
 
 
-
         @Override
         public void onGetGroupMemberList(int code, GotyeGroup group, int pagerIndex, List<GotyeUser> allList,
                                          List<GotyeUser> curList) {
-              groupMembersCount=allList.size();
-          }
+            //检查是否有更多数据
+            if (allList.size() != 0) {
+                allUsers.addAll(allList);
+                api.reqGroupMemberList(group, pagerIndex + 1);
+            }
+
+        }
     };
 }

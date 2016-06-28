@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
+import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
 import com.gotye.api.GotyeMessage;
 import com.gotye.api.GotyeMessageStatus;
@@ -231,6 +232,8 @@ public class ChatMessageAdapter extends BaseAdapter {
                         .findViewById(R.id.tv_money_greeting);
                 holder.tv_sponsor_name = (TextView) convertView
                         .findViewById(R.id.tv_sponsor_name);
+                holder.tv_packet_type = (TextView) convertView
+                        .findViewById(R.id.tv_packet_type);
 
             } else if (message.getType() == GotyeMessageType.GotyeMessageTypeText && jsonRedPacketAcked != null) {
 
@@ -330,16 +333,28 @@ public class ChatMessageAdapter extends BaseAdapter {
             String greetings = jsonRedPacket.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
             holder.tv_money_greeting.setText(greetings);
             holder.tv_sponsor_name.setText(sponsorName);
+
+            String packetType = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+            if (!TextUtils.isEmpty(packetType) && TextUtils.equals(packetType, RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+                holder.tv_packet_type.setVisibility(View.VISIBLE);
+                holder.tv_packet_type.setText(chatPage.getResources().getString(R.string.exclusive_red_packet));
+            } else {
+                holder.tv_packet_type.setVisibility(View.GONE);
+            }
+
+
+
             holder.bubble.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     JSONObject jsonObject = new JSONObject();
-                    String toAvatarUrl = chatPage.currentLoginUser.getIcon().getUrl();
+                    String toAvatarUrl = chatPage.currentLoginUser.getIcon().getPath();
                     String toNickName = chatPage.currentLoginUser.getNickname();
                     toAvatarUrl = TextUtils.isEmpty(toAvatarUrl) ? "none" : toAvatarUrl;
                     toNickName = TextUtils.isEmpty(toNickName) ? chatPage.currentLoginUser.getName() : toNickName;
                     jsonObject.put(RedPacketConstant.KEY_TO_AVATAR_URL, toAvatarUrl);
                     jsonObject.put(RedPacketConstant.KEY_TO_NICK_NAME, toNickName);
+                    jsonObject.put(RedPacketConstant.KEY_CURRENT_ID, chatPage.currentLoginUser.getName());
                     if (getDirect(message) == MESSAGE_DIRECT_RECEIVE) {
                         jsonObject.put(RedPacketConstant.KEY_MESSAGE_DIRECT, RPConstant.MESSAGE_DIRECT_RECEIVE);
                     } else {
@@ -347,6 +362,7 @@ public class ChatMessageAdapter extends BaseAdapter {
                     }
                     String moneyID = jsonRedPacket.getString(RPConstant.EXTRA_RED_PACKET_ID);
                     jsonObject.put(RPConstant.EXTRA_RED_PACKET_ID, moneyID);
+                    jsonObject.put(RedPacketConstant.KEY_CURRENT_ID,chatPage.currentLoginUser.getName());
                     if (chatPage.chatType == 0) {
 
                         jsonObject.put("chatType", 1);
@@ -354,7 +370,26 @@ public class ChatMessageAdapter extends BaseAdapter {
 
                         jsonObject.put("chatType", 2);
                     }
+                    String specialAvatarUrl = "none";
+                    String specialNickname = "";
+                    String packetType = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+                    String specialReceiveId = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID);
+                    if (!TextUtils.isEmpty(packetType) && packetType.equals(RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+                        GotyeUser userTemp=new GotyeUser();
+                        userTemp.setName(specialReceiveId);
+                        GotyeUser user = api.getUserDetail(userTemp,false);
 
+                        if (user != null) {
+                            specialAvatarUrl = TextUtils.isEmpty(user.getIcon().getPath()) ? "none" : user.getIcon().getPath();
+                            specialNickname = TextUtils.isEmpty(user.getNickname()) ? user.getName() : user.getNickname();
+                        } else {
+                            specialNickname = specialReceiveId;
+                        }
+                    }
+                    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID,specialReceiveId);
+                    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE,packetType);
+                    jsonObject.put(RedPacketConstant.KEY_SPECIAL_AVATAR_URL,specialAvatarUrl);
+                    jsonObject.put(RedPacketConstant.KEY_SPECIAL_NICK_NAME,specialNickname);
                     RedPacketUtil.openRedPacket(chatPage, jsonObject, new OpenRedPacketSuccess() {
 
                         @Override
@@ -777,7 +812,7 @@ public class ChatMessageAdapter extends BaseAdapter {
         TextView tv_money_greeting;
         TextView tv_sponsor_name;
         TextView tv_money_msg;
-
+        TextView  tv_packet_type ;
     }
 
     public void refreshData(List<GotyeMessage> list) {

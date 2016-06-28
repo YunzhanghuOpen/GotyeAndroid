@@ -359,6 +359,7 @@
     <string name="withdraw_not_psd_msg">为了你的账户安全，需要通过一张银行卡验证你的身份信息。</string>
     <string name="yes_verify">已验证</string>
     <string name="your_no_bankcard">你还没有银行卡</string>
+    <string name="exclusive_red_packet">专属红包</string>
     <style name="AddBankCardTextViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>

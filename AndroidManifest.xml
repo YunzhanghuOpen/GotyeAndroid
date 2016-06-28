@@ -141,7 +141,21 @@
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustPan|stateHidden"></activity>
 
+        <activity
+            android:name="com.easemob.redpacketui.ui.activity.RPGroupMemberActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan|stateHidden"
+            />
 
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            />
+        <!--红包相关界面end-->
 
         <receiver android:name="com.open_demo.StartServiceReceiver" >
             <intent-filter android:priority="1000" >

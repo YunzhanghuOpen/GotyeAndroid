@@ -28,6 +28,14 @@ public class RedPacketConstant {
     public static final String KEY_TO_AVATAR_URL = "toAvatarUrl";
     public static final String KEY_MESSAGE_DIRECT= "messageDirect";
 
+    //3.0需要用到的
+    public static final String KEY_CURRENT_ID = "current_id";
+    public static final String EXTRA_RED_PACKET_TYPE = "red_packet_type";
+    public static final String MESSAGE_ATTR_RED_PACKET_TYPE = "money_type_special";
+    public static final String MESSAGE_ATTR_SPECIAL_RECEIVER_ID = "special_money_receiver_id";
+    public static final String GROUP_RED_PACKET_TYPE_EXCLUSIVE = "member";
 
+    public static final  String KEY_SPECIAL_AVATAR_URL = "specialAvatarUrl";
+    public static final  String KEY_SPECIAL_NICK_NAME= "specialNickname";
 }
 
