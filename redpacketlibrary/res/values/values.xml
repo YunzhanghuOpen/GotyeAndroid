@@ -37,10 +37,57 @@
     <color name="title_color">#D3D97A</color>
     <color name="title_transparent_color">#90D3D97A</color>
     <color name="top_red_color">#D24F44</color>
-    <declare-styleable name="RPCardView"><attr format="color" name="RPcardBackgroundColor"/><attr format="dimension" name="RPcardCornerRadius"/><attr format="dimension" name="RPcardElevation"/><attr format="dimension" name="RPcardMaxElevation"/><attr format="boolean" name="RPcardUseCompatPadding"/><attr format="boolean" name="RPcardPreventCornerOverlap"/><attr format="dimension" name="RPcontentPadding"/><attr format="dimension" name="RPcontentPaddingLeft"/><attr format="dimension" name="RPcontentPaddingRight"/><attr format="dimension" name="RPcontentPaddingTop"/><attr format="dimension" name="RPcontentPaddingBottom"/><attr name="android:minWidth"/><attr name="android:minHeight"/></declare-styleable>
-    <declare-styleable name="RPRecyclerView"><attr format="string" name="RPlayoutManager"/><attr name="android:orientation"/><attr format="integer" name="RPspanCount"/><attr format="boolean" name="RPreverseLayout"/><attr format="boolean" name="RPstackFromEnd"/></declare-styleable>
-    <declare-styleable name="app"><attr format="string" name="RPmytitle"/><attr format="reference" name="RPleftImage"/><attr format="reference" name="RPrightImage"/><attr format="string" name="RPrightText"/><attr format="reference|color" name="RPrightTextColor"/><attr format="dimension" name="RPrightTextSize"/><attr format="string" name="RPsubTitleText"/><attr format="reference|color" name="RPsubTitleTextColor"/><attr format="dimension" name="RPsubTitleTextSize"/><attr format="reference|color" name="RPtitleTextColor"/><attr format="dimension" name="RPtitleTextSize"/><attr format="reference|color" name="RPtitleBackground"/></declare-styleable>
-    <declare-styleable name="gridPasswordView"><attr format="color|reference" name="gpvTextColor"/><attr format="dimension" name="gpvTextSize"/><attr format="color" name="gpvLineColor"/><attr format="color" name="gpvGridColor"/><attr format="dimension" name="gpvLineWidth"/><attr format="integer" name="gpvPasswordLength"/><attr format="string" name="gpvPasswordTransformation"/><attr format="enum" name="gpvPasswordType"><enum name="numberPassword" value="0"/><enum name="textPassword" value="1"/><enum name="textVisiblePassword" value="2"/><enum name="textWebPassword" value="3"/></attr></declare-styleable>
+    <declare-styleable name="RPCardView">
+        <attr format="color" name="RPcardBackgroundColor"/>
+        <attr format="dimension" name="RPcardCornerRadius"/>
+        <attr format="dimension" name="RPcardElevation"/>
+        <attr format="dimension" name="RPcardMaxElevation"/>
+        <attr format="boolean" name="RPcardUseCompatPadding"/>
+        <attr format="boolean" name="RPcardPreventCornerOverlap"/>
+        <attr format="dimension" name="RPcontentPadding"/>
+        <attr format="dimension" name="RPcontentPaddingLeft"/>
+        <attr format="dimension" name="RPcontentPaddingRight"/>
+        <attr format="dimension" name="RPcontentPaddingTop"/>
+        <attr format="dimension" name="RPcontentPaddingBottom"/>
+        <attr name="android:minWidth"/>
+        <attr name="android:minHeight"/>
+    </declare-styleable>
+    <declare-styleable name="RPRecyclerView">
+        <attr format="string" name="RPlayoutManager"/>
+        <attr name="android:orientation"/>
+        <attr format="integer" name="RPspanCount"/>
+        <attr format="boolean" name="RPreverseLayout"/>
+        <attr format="boolean" name="RPstackFromEnd"/>
+    </declare-styleable>
+    <declare-styleable name="app">
+        <attr format="string" name="RPmytitle"/>
+        <attr format="reference" name="RPleftImage"/>
+        <attr format="reference" name="RPrightImage"/>
+        <attr format="string" name="RPrightText"/>
+        <attr format="reference|color" name="RPrightTextColor"/>
+        <attr format="dimension" name="RPrightTextSize"/>
+        <attr format="string" name="RPsubTitleText"/>
+        <attr format="reference|color" name="RPsubTitleTextColor"/>
+        <attr format="dimension" name="RPsubTitleTextSize"/>
+        <attr format="reference|color" name="RPtitleTextColor"/>
+        <attr format="dimension" name="RPtitleTextSize"/>
+        <attr format="reference|color" name="RPtitleBackground"/>
+    </declare-styleable>
+    <declare-styleable name="gridPasswordView">
+        <attr format="color|reference" name="gpvTextColor"/>
+        <attr format="dimension" name="gpvTextSize"/>
+        <attr format="color" name="gpvLineColor"/>
+        <attr format="color" name="gpvGridColor"/>
+        <attr format="dimension" name="gpvLineWidth"/>
+        <attr format="integer" name="gpvPasswordLength"/>
+        <attr format="string" name="gpvPasswordTransformation"/>
+        <attr format="enum" name="gpvPasswordType">
+            <enum name="numberPassword" value="0"/>
+            <enum name="textPassword" value="1"/>
+            <enum name="textVisiblePassword" value="2"/>
+            <enum name="textWebPassword" value="3"/>
+        </attr>
+    </declare-styleable>
     <dimen name="dialogHeight">401dp</dimen>
     <dimen name="dialogWidth">307dp</dimen>
     <dimen name="font105px">35sp</dimen>
@@ -360,6 +407,7 @@
     <string name="yes_verify">已验证</string>
     <string name="your_no_bankcard">你还没有银行卡</string>
     <string name="exclusive_red_packet">专属红包</string>
+
     <style name="AddBankCardTextViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
@@ -372,12 +420,14 @@
         <item name="android:drawableRight">@drawable/rp_arrow_forward</item>
         <item name="android:drawablePadding">10dp</item>
     </style>
+
     <style name="AvatarIconStyle">
         <item name="android:layout_width">@dimen/size165px</item>
         <item name="android:layout_height">@dimen/size165px</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginTop">@dimen/size129px</item>
     </style>
+
     <style name="BindBankCardBottomStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -385,6 +435,7 @@
         <item name="android:textSize">@dimen/font36px</item>
         <item name="android:textColor">@color/text_light_grey</item>
     </style>
+
     <style name="BindBankCardEditTextStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -397,17 +448,20 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textColorHint">@color/text_light_grey</item>
     </style>
+
     <style name="BindBankCardHintStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/text_grey</item>
         <item name="android:textSize">@dimen/font42px</item>
     </style>
+
     <style name="BindBankCardRLayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
         <item name="android:background">@color/money_white</item>
     </style>
+
     <style name="BindBankCardTextViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
@@ -416,6 +470,7 @@
         <item name="android:textSize">@dimen/font42px</item>
         <item name="android:layout_marginLeft">15dp</item>
     </style>
+
     <style name="ChangeButtonStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -423,6 +478,7 @@
         <item name="android:textColor">@color/button_blue</item>
         <item name="android:textSize">@dimen/font39px</item>
     </style>
+
     <style name="ChangeLeftTextViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">47dp</item>
@@ -435,10 +491,12 @@
         <item name="android:drawableRight">@drawable/rp_arrow_forward</item>
         <item name="android:drawablePadding">10dp</item>
     </style>
+
     <style name="ChooseRecordStyle" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/rp_top_in</item>
         <item name="android:windowExitAnimation">@anim/rp_top_out</item>
     </style>
+
     <style name="DialogButtonStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -447,6 +505,7 @@
         <item name="android:textColor">@color/text_blue</item>
         <item name="android:textSize">@dimen/font51px</item>
     </style>
+
     <style name="DialogClosedButtonStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -456,6 +515,7 @@
         <item name="android:textSize">@dimen/font51px</item>
         <item name="android:background">@drawable/rp_closed_icon</item>
     </style>
+
     <style name="DialogPayTypeRightArrow">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -464,12 +524,14 @@
         <item name="android:layout_marginRight">@dimen/size45px</item>
         <item name="android:src">@drawable/rp_arrow_forward</item>
     </style>
+
     <style name="DialogPayTypeStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">@dimen/font45px</item>
     </style>
+
     <style name="DialogTitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -477,14 +539,17 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">@dimen/font51px</item>
     </style>
+
     <style name="DividerStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1px</item>
         <item name="android:background">@color/divider_color</item>
     </style>
+
     <style name="DividerStyleNoHead" parent="DividerStyle">
         <item name="android:layout_marginLeft">@dimen/size45px</item>
     </style>
+
     <style name="EMDialogStyle">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>
@@ -495,6 +560,7 @@
         <item name="android:windowAnimationStyle">@style/dialog_animation</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
     <style name="GridPasswordStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/size129px</item>
@@ -510,16 +576,20 @@
         <item name="gpvTextColor">@color/text_black</item>
         <item name="gpvTextSize">@dimen/size51px</item>
     </style>
+
     <style name="GridPasswordView"/>
+
     <style name="GridPasswordView.Divider">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_marginTop">1dp</item>
         <item name="android:layout_marginBottom">1dp</item>
     </style>
+
     <style name="GridPasswordView.EditText" parent="GridPasswordView.TextView">
         <item name="android:cursorVisible">false</item>
     </style>
+
     <style name="GridPasswordView.TextView">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -528,6 +598,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:singleLine">true</item>
     </style>
+
     <style name="LoadingProgressStyle" parent="@android:style/Widget.ProgressBar">
         <item name="android:indeterminateDrawable">@anim/rp_progress_loading</item>
         <item name="android:backgroundDimEnabled">true</item>
@@ -535,6 +606,7 @@
         <item name="android:layout_height">@dimen/size84px</item>
         <item name="android:indeterminate">false</item>
     </style>
+
     <style name="PayTypeIconStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -542,6 +614,7 @@
         <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_marginLeft">@dimen/size45px</item>
     </style>
+
     <style name="RPBase.CardView" parent="android:Widget">
         <item name="RPcardCornerRadius">@dimen/rp_cardview_default_radius</item>
         <item name="RPcardElevation">@dimen/rp_cardview_default_elevation</item>
@@ -549,14 +622,18 @@
         <item name="RPcardUseCompatPadding">false</item>
         <item name="RPcardPreventCornerOverlap">true</item>
     </style>
+
     <style name="RPCardView" parent="RPBase.CardView">
     </style>
+
     <style name="RPCardView.Dark">
         <item name="RPcardBackgroundColor">@color/rp_cardview_dark_background</item>
     </style>
+
     <style name="RPCardView.Light">
         <item name="RPcardBackgroundColor">@color/rp_cardview_light_background</item>
     </style>
+
     <style name="ReceivedMoneyStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -564,6 +641,7 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">@dimen/font132px</item>
     </style>
+
     <style name="RecordReceivedCountStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -571,6 +649,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:textColor">@color/text_light_grey</item>
     </style>
+
     <style name="RecordReceivedCountTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -579,6 +658,7 @@
         <item name="android:textColor">@color/text_light_grey</item>
         <item name="android:textSize">@dimen/font36px</item>
     </style>
+
     <style name="SendMoneyBottomTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -588,6 +668,7 @@
         <item name="android:layout_centerInParent">true</item>
         <item name="android:layout_marginBottom">@dimen/size39px</item>
     </style>
+
     <style name="SendMoneyButtonStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
@@ -598,6 +679,7 @@
         <item name="android:textColor">@color/money_white</item>
         <item name="android:textSize">@dimen/font51px</item>
     </style>
+
     <style name="SendMoneyEditTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -609,6 +691,7 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">15sp</item>
     </style>
+
     <style name="SendMoneyGreetingsStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">62dp</item>
@@ -617,6 +700,7 @@
         <item name="android:textSize">15sp</item>
         <item name="android:padding">14dp</item>
     </style>
+
     <style name="SendMoneyGroupRuleTipsStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -625,6 +709,7 @@
         <item name="android:textColor">@color/money_red_light</item>
         <item name="android:textSize">14sp</item>
     </style>
+
     <style name="SendMoneyLeftTextViewStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -634,12 +719,14 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">15sp</item>
     </style>
+
     <style name="SendMoneyRLayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
         <item name="android:layout_marginTop">15dp</item>
         <item name="android:background">@color/money_white</item>
     </style>
+
     <style name="SendMoneyRightTextViewStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -649,6 +736,7 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="UserNameStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -657,12 +745,14 @@
         <item name="android:textColor">@color/text_black</item>
         <item name="android:textSize">@dimen/font45px</item>
     </style>
+
     <style name="YzhMoneyIconStyle">
         <item name="android:layout_width">@dimen/size75px</item>
         <item name="android:layout_height">@dimen/size96px</item>
         <item name="android:layout_marginLeft">@dimen/size30px</item>
         <item name="android:layout_marginTop">@dimen/size45px</item>
     </style>
+
     <style name="dialog_animation" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/rp_fade_in</item>
         <item name="android:windowExitAnimation">@anim/rp_fade_out</item>

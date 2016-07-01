@@ -26,7 +26,7 @@ public class RedPacketConstant {
     //点击红包消息，需要传给红包SDK的数据，json的键值对的key值常量
     public static final String KEY_TO_NICK_NAME = "toNickName";
     public static final String KEY_TO_AVATAR_URL = "toAvatarUrl";
-    public static final String KEY_MESSAGE_DIRECT= "messageDirect";
+    public static final String KEY_MESSAGE_DIRECT = "messageDirect";
 
     //3.0需要用到的
     public static final String KEY_CURRENT_ID = "current_id";
@@ -35,7 +35,7 @@ public class RedPacketConstant {
     public static final String MESSAGE_ATTR_SPECIAL_RECEIVER_ID = "special_money_receiver_id";
     public static final String GROUP_RED_PACKET_TYPE_EXCLUSIVE = "member";
 
-    public static final  String KEY_SPECIAL_AVATAR_URL = "specialAvatarUrl";
-    public static final  String KEY_SPECIAL_NICK_NAME= "specialNickname";
+    public static final String KEY_SPECIAL_AVATAR_URL = "specialAvatarUrl";
+    public static final String KEY_SPECIAL_NICK_NAME = "specialNickname";
 }
 
