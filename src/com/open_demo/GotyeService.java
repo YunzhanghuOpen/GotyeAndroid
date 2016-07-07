@@ -138,15 +138,7 @@ public class GotyeService extends Service {
     private GotyeDelegate mDelegate = new GotyeDelegate() {
         @Override
         public void onReceiveMessage(GotyeMessage message) {
-
-            String currentUserId =currentLoginUser.getName();   //当前登陆用户id
-            if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
-                api.deleteMessage(message);
-                //TODO 删除打印
-                 return;
-            }
             String msg = null;
-
             if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
                 JSONObject redpacketJSON=CheckRedPacketMessageUtil.isRedPacketMessage(message);
                 JSONObject redpacketAckJSON=CheckRedPacketMessageUtil.isRedPacketAckedMessage(message);
@@ -155,10 +147,14 @@ public class GotyeService extends Service {
                     msg = message.getSender().getName() +greetings;
                 }else if(redpacketAckJSON!=null){
                     //红包领取消息不提示
+                    String currentUserId =currentLoginUser.getName();   //当前登陆用户id
+                    if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
+                        api.deleteMessage(message);
+                        return;
+                    }
                     return;
                 }else{
                     msg = message.getSender().getName() + ":" + message.getText();
-
                 }
 
 
