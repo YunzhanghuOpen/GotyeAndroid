@@ -1083,10 +1083,11 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         @Override
         public void onReceiveMessage(GotyeMessage message) {
             String currentUserId = currentLoginUser.getName();   //当前登陆用户id
-            if (!CheckRedPacketMessageUtil.isMyAckMessage(message, currentUserId)) {
+            if (!CheckRedPacketMessageUtil.isMyAckMessage(message)) {
                 api.deleteMessage(message);
                 //TODO 删除打印
-                System.out.println("delete message------->ChatPage");
+                Log.d("delete--->>","Chat");
+                Log.d("currentUserId--->>",currentUserId);
                 return;
             }
             // GotyeChatManager.getInstance().insertChatMessage(message);

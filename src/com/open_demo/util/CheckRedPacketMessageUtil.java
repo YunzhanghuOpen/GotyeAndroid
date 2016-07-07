@@ -1,5 +1,6 @@
 package com.open_demo.util;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONException;
@@ -7,6 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.gotye.api.GotyeMessage;
 import com.gotye.api.GotyeMessageType;
 
+import utils.AuthDataUtils;
 import utils.RedPacketConstant;
 
 /**
@@ -67,7 +69,7 @@ public class CheckRedPacketMessageUtil {
         return jsonRedPacketAcked;
     }
 
-    public  static  boolean   isMyAckMessage(GotyeMessage message,String currentUserId) {
+    public  static  boolean   isMyAckMessage(GotyeMessage message) {
         boolean IS_MY_MESSAGE = true;
         JSONObject jsonObject = isRedPacketAckedMessage(message);
         if (jsonObject != null) {
@@ -75,8 +77,11 @@ public class CheckRedPacketMessageUtil {
             String recieveUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
             String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
             String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
+            Log.d("recieveUserId--->>",recieveUserId);
+            Log.d("sendUserId--->>",sendUserId);
+            String   currentUserId= AuthDataUtils.getInstance().getLoginUserId();
             //发送者和领取者都不是自己-
-            if ((!currentUserId.equals(recieveUserId)) && (!currentUserId.equals(sendUserId))) {
+            if (!TextUtils.isEmpty(currentUserId)&&(!currentUserId.equals(recieveUserId)) && (!currentUserId.equals(sendUserId))) {
                 IS_MY_MESSAGE=false;
             }
 

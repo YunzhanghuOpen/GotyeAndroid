@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -304,7 +305,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                 startActivity(intent);
                 finish();
             } else if (code == GotyeStatusCode.CodeNetworkDisConnected) {
-
                 // Toast.makeText(this, "您的账号掉线了！", Toast.LENGTH_SHORT).show();
                 /*
 				 * Intent intent = new Intent(getBaseContext(), LoginPage.class);
@@ -327,8 +327,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         public void onReceiveMessage(GotyeMessage message) {
 
             String currentUserId =currentLoginUser.getName();   //当前登陆用户id
-            if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
+            if(!CheckRedPacketMessageUtil.isMyAckMessage(message)){
                 api.deleteMessage(message);
+                Log.d("delete--->>","Main");
+                Log.d("currentUserId--->>",currentUserId);
                   return;
             }
             if (returnNotify) {

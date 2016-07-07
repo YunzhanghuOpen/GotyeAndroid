@@ -27,7 +27,7 @@ public class AuthDataUtils {
     private static SharedPreferences mSharedPreferences;
     private static AuthDataUtils mPreferencemManager;
     private static SharedPreferences.Editor editor;
-
+    private static String LOGIN_USER_ID="LOGIN_USER_ID";
     private AuthDataUtils(Context cxt) {
         mSharedPreferences = cxt.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         editor = mSharedPreferences.edit();
@@ -56,9 +56,18 @@ public class AuthDataUtils {
 
     public void setAuthData(JSONObject authData, String userId) {
         editor.putString(userId, authData.toJSONString());
+
         editor.commit();
     }
 
+    public void setLoginUserId(String userId){
+        editor.putString(LOGIN_USER_ID, userId);
+        editor.commit();
+    }
+    public String getLoginUserId(){
+
+        return  mSharedPreferences.getString(LOGIN_USER_ID, "");
+    }
     public AuthData getAuthData(String userId) {
         JSONObject jsonObject;
         AuthData authData = new AuthData();
@@ -79,6 +88,7 @@ public class AuthDataUtils {
         return authData;
 
     }
+
 
 
     public void removeCurrentUserInfo(String userId) {

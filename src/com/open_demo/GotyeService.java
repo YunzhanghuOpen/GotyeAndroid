@@ -147,9 +147,12 @@ public class GotyeService extends Service {
                     msg = message.getSender().getName() +greetings;
                 }else if(redpacketAckJSON!=null){
                     //红包领取消息不提示
-                    String currentUserId =currentLoginUser.getName();   //当前登陆用户id
-                    if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
+                    String currentUserId =currentLoginUser.getName();//当前登陆用户id
+
+                    if(!CheckRedPacketMessageUtil.isMyAckMessage(message)){
                         api.deleteMessage(message);
+                        Log.d("delete--->>","Service");
+                        Log.d("currentUserId--->>",currentUserId);
                         return;
                     }
                     return;

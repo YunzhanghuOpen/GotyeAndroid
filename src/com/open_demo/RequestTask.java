@@ -23,6 +23,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
     public RequestTask(Context context, String userID  ) {
         this.context = context;
         this.userID = userID;
+        AuthDataUtils.getInstance().setLoginUserId(userID);
      }
 
     @Override
