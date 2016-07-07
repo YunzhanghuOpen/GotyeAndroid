@@ -413,7 +413,7 @@ public class ChatMessageAdapter extends BaseAdapter {
         String recieveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
         String recieveUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
         String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
-        String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者昵称
+        String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
         //发送者和领取者都是自己-
         if (currentUserId.equals(recieveUserId) && currentUserId.equals(sendUserId)) {
             holder.tv_money_msg.setText(chatPage.getResources().getString(R.string.money_msg_take_money));
