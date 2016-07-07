@@ -64,8 +64,6 @@ public class CheckRedPacketMessageUtil {
                 }
             }
         }
-
-
         return jsonRedPacketAcked;
     }
 
@@ -74,11 +72,7 @@ public class CheckRedPacketMessageUtil {
         JSONObject jsonObject = isRedPacketAckedMessage(message);
         if (jsonObject != null) {
             String recieveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
-            String recieveUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
             String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
-            String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
-            Log.d("recieveUserId--->>",recieveUserId);
-            Log.d("sendUserId--->>",sendUserId);
             String   currentUserId= AuthDataUtils.getInstance().getLoginUserId();
             //发送者和领取者都不是自己-
             if (!TextUtils.isEmpty(currentUserId)&&(!currentUserId.equals(recieveUserId)) && (!currentUserId.equals(sendUserId))) {
