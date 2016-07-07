@@ -326,15 +326,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         @Override
         public void onReceiveMessage(GotyeMessage message) {
 
-
-
             String currentUserId =currentLoginUser.getName();   //当前登陆用户id
             if(!CheckRedPacketMessageUtil.isMyAckMessage(message,currentUserId)){
                 api.deleteMessage(message);
-                 return;
+                  return;
             }
-
-
             if (returnNotify) {
                 return;
             }
