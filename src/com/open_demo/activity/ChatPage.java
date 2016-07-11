@@ -77,7 +77,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import utils.RedPacketConstant;
 import utils.RedPacketUtil;
@@ -127,7 +129,7 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
     boolean isClick = false;
 
     //群成员列表
-    private List<GotyeUser> allUsers = new ArrayList<GotyeUser>();
+    private Map<String, GotyeUser> allUsers = new HashMap<String, GotyeUser>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -375,12 +377,12 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
     private void sendRedPacketMessage(Intent data) {
         String specialReceiveId = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);
         String redPacketType = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_TYPE);
-         String greetings = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+        String greetings = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
         String moneyID = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_ID);
-        System.out.println("redPacketType------->"+redPacketType);
-        System.out.println("specialReceiveId------->"+specialReceiveId);
-        System.out.println("greetings------->"+greetings);
-        System.out.println("moneyID------->"+moneyID);
+        System.out.println("redPacketType------->" + redPacketType);
+        System.out.println("specialReceiveId------->" + specialReceiveId);
+        System.out.println("greetings------->" + greetings);
+        System.out.println("moneyID------->" + moneyID);
 
 
         String content = "[" + getResources().getString(R.string.gotye_luckymoney) + "]" + greetings;
@@ -856,14 +858,14 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
                 public void getGroupMember(final String groupID, final GroupMemberCallback mCallBack) {
 
                     List<RPUserBean> userBeanList = new ArrayList<RPUserBean>();
-
-                    for (int i = 0; i < allUsers.size(); i++) {
+                    List<GotyeUser> gotyeUsers=new ArrayList<GotyeUser>(allUsers.values());
+                    for (int i = 0; i < gotyeUsers.size(); i++) {
                         RPUserBean userBean = new RPUserBean();
-                        userBean.userId = allUsers.get(i).getName();
+                        userBean.userId = gotyeUsers.get(i).getName();
                         if (userBean.userId.equals(currentLoginUser.getName())) {
                             continue;
                         }
-                        GotyeUser memberUser = allUsers.get(i);
+                        GotyeUser memberUser = gotyeUsers.get(i);
                         if (memberUser != null) {
                             userBean.userAvatar = TextUtils.isEmpty(memberUser.getIcon().getPath()) ? "none" : memberUser.getIcon().getPath();
                             userBean.userNickname = TextUtils.isEmpty(memberUser.getNickname()) ? memberUser.getName() : memberUser.getNickname();
@@ -1086,8 +1088,8 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
             if (!CheckRedPacketMessageUtil.isMyAckMessage(message)) {
                 api.deleteMessage(message);
                 //TODO 删除打印
-                Log.d("delete--->>","Chat");
-                Log.d("currentUserId--->>",currentUserId);
+                Log.d("delete--->>", "Chat");
+                Log.d("currentUserId--->>", currentUserId);
                 return;
             }
             // GotyeChatManager.getInstance().insertChatMessage(message);
@@ -1368,7 +1370,9 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
                                          List<GotyeUser> curList) {
             //检查是否有更多数据
             if (allList.size() != 0) {
-                allUsers.addAll(allList);
+                for (GotyeUser user : allList) {
+                    allUsers.put(user.getName(), user);
+                }
                 api.reqGroupMemberList(group, pagerIndex + 1);
             }
 
