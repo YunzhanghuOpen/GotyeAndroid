@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
 import com.easemob.redpacketsdk.bean.AuthData;
 import com.easemob.redpacketsdk.bean.RPUserBean;
 import com.easemob.redpacketsdk.bean.RedPacketInfo;
@@ -18,7 +17,14 @@ import com.easemob.redpacketui.ui.activity.RPChangeActivity;
 import com.easemob.redpacketui.ui.activity.RPRedPacketActivity;
 import com.easemob.redpacketui.utils.RPGroupMemberUtil;
 import com.easemob.redpacketui.utils.RPOpenPacketUtil;
+import com.gotye.api.GotyeAPI;
+import com.gotye.api.GotyeMessage;
+import com.gotye.api.GotyeMessageType;
 import com.gotye.api.GotyeUser;
+import com.open_demo.activity.ChatPage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,62 +92,70 @@ public class RedPacketUtil {
         activity.startActivityForResult(intent, requestCode);
     }
 
-    /**
-     * 拆红包的方法
-     *
-     * @param activity   FragmentActivity
-     * @param jsonObject
-     */
-    public static void openRedPacket(final FragmentActivity activity, JSONObject jsonObject, final OpenRedPacketSuccess openRedPacketSuccess) {
-        final ProgressDialog progressDialog = new ProgressDialog(activity);
-        progressDialog.setCanceledOnTouchOutside(false);
-        String messageDirect;
-        //接收者头像url 默认值为none
-        String toAvatarUrl = jsonObject.getString(RedPacketConstant.KEY_TO_AVATAR_URL);
-        //接收者昵称 默认值为当前用户ID
-        final String toNickname = jsonObject.getString(RedPacketConstant.KEY_TO_NICK_NAME);
-        String moneyId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_ID);
-        messageDirect = jsonObject.getString(RedPacketConstant.KEY_MESSAGE_DIRECT);
-        final int chatType = jsonObject.getInteger(RedPacketConstant.KEY_CHAT_TYPE);
-        String specialAvatarUrl = jsonObject.getString(RedPacketConstant.KEY_SPECIAL_AVATAR_URL);
-        String specialNickname = jsonObject.getString(RedPacketConstant.KEY_SPECIAL_NICK_NAME);
-        RedPacketInfo redPacketInfo = new RedPacketInfo();
-        redPacketInfo.moneyID = moneyId;
-        redPacketInfo.toAvatarUrl = toAvatarUrl;
-        redPacketInfo.toNickName = toNickname;
-        redPacketInfo.moneyMsgDirect = messageDirect;
-        redPacketInfo.chatType = chatType;
-        String packetType = jsonObject.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
-        if (!TextUtils.isEmpty(packetType) && packetType.equals(RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
-            redPacketInfo.specialAvatarUrl = specialAvatarUrl;
-            redPacketInfo.specialNickname = specialNickname;
+
+    public static void openRedPacket(final ChatPage mChatPage, JSONObject jsonRedPacket, String mDirect, GotyeAPI api) {
+
+        try {
+            final ProgressDialog progressDialog = new ProgressDialog(mChatPage);
+            progressDialog.setCanceledOnTouchOutside(false);
+            RedPacketInfo mRedPacketInfo = new RedPacketInfo();
+            GotyeUser mCurrentUser = mChatPage.currentLoginUser;
+            //拆红包者的昵称和头像
+            String toAvatarUrl = mCurrentUser.getIcon().getPath();
+            String toNickName = mCurrentUser.getNickname();
+            mRedPacketInfo.toAvatarUrl = TextUtils.isEmpty(toAvatarUrl) ? "none" : toAvatarUrl;
+            mRedPacketInfo.toNickName = TextUtils.isEmpty(toNickName) ? mCurrentUser.getName() : toNickName;
+            mRedPacketInfo.moneyMsgDirect = mDirect;//红包方向
+            String moneyID = jsonRedPacket.getString(RPConstant.EXTRA_RED_PACKET_ID);
+            mRedPacketInfo.moneyID = moneyID;//红包ID
+            if (mChatPage.chatType == 0) {//单聊
+                mRedPacketInfo.chatType = RPConstant.CHATTYPE_SINGLE;
+            } else if (mChatPage.chatType == 2) {//群聊
+                mRedPacketInfo.chatType = RPConstant.CHATTYPE_GROUP;
+            }
+            String packetType = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+            String specialReceiveId = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID);
+            if (!TextUtils.isEmpty(packetType) && packetType.equals(RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+                GotyeUser userTemp = new GotyeUser();
+                userTemp.setName(specialReceiveId);
+                GotyeUser specialUser = api.getUserDetail(userTemp, false);
+                String specialAvatarUrl = "none";
+                String specialNickname = specialReceiveId;
+                if (specialUser != null) {
+                    specialAvatarUrl = TextUtils.isEmpty(specialUser.getIcon().getPath()) ? "none" : specialUser.getIcon().getPath();
+                    specialNickname = TextUtils.isEmpty(specialUser.getNickname()) ? specialUser.getName() : specialUser.getNickname();
+                }
+                mRedPacketInfo.specialAvatarUrl = specialAvatarUrl;
+                mRedPacketInfo.specialNickname = specialNickname;
+                mRedPacketInfo.toUserId = mChatPage.currentLoginUser.getName();
+            }
+
+            AuthData authData = AuthDataUtils.getInstance().getAuthData(mChatPage.currentLoginUser.getName());
+            RPOpenPacketUtil.getInstance().openRedPacket(mRedPacketInfo, authData, mChatPage, new RPOpenPacketUtil.RPOpenPacketCallBack() {
+                @Override
+                public void onSuccess(String senderId, String senderNickname) {
+                    mChatPage.sendRedPacketAckMessage(senderId, senderNickname);
+                }
+
+                @Override
+                public void showLoading() {
+                    progressDialog.show();
+                }
+
+                @Override
+                public void hideLoading() {
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onError(String code, String message) {
+                    Toast.makeText(mChatPage, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        String currentUserId = jsonObject.getString(RedPacketConstant.KEY_CURRENT_ID);
-        redPacketInfo.imUserId = currentUserId;
-        redPacketInfo.toUserId = currentUserId;
 
-        AuthData authData = AuthDataUtils.getInstance().getAuthData(currentUserId);
-        RPOpenPacketUtil.getInstance().openRedPacket(redPacketInfo, authData, activity, new RPOpenPacketUtil.RPOpenPacketCallBack() {
-            @Override
-            public void onSuccess(String senderId, String senderNickname) {
-                openRedPacketSuccess.onSuccess(senderId, senderNickname);
-            }
-
-            @Override
-            public void showLoading() {
-                progressDialog.show();
-            }
-
-            @Override
-            public void hideLoading() {
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onError(String code, String message) {
-                Toast.makeText(activity, "", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     /**
@@ -163,5 +177,78 @@ public class RedPacketUtil {
         intent.putExtra(RPConstant.EXTRA_AUTH_INFO, AuthDataUtils.getInstance().getAuthData(userId));
         fragmentActivity.startActivity(intent);
     }
+
+    public static JSONObject isRedPacketMsg(GotyeMessage message) {
+        //如果没有扩展字段直接返回null
+        if (message.getExtraData() == null) {
+            return null;
+        }
+        if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
+            String extraData = new String(message.getExtraData());
+            if (!TextUtils.isEmpty(extraData)) {
+                try {
+                    JSONObject rpJsonObject = new JSONObject(extraData);
+                    if (rpJsonObject.has(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)
+                            && rpJsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)) {
+
+                        return rpJsonObject;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static JSONObject isRedPacketAckMsg(GotyeMessage message) {
+        //如果没有扩展字段直接返回null
+        if (message.getExtraData() == null) {
+            return null;
+        }
+        if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
+            String extraData = new String(message.getExtraData());
+            if (!TextUtils.isEmpty(extraData)) {
+                try {
+                    JSONObject ackJsonObject = new JSONObject(extraData);
+                    if (ackJsonObject.has(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)
+                            && ackJsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)) {
+
+                        return ackJsonObject;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isMyAckMessage(GotyeMessage message) {
+        JSONObject jsonObject = isRedPacketAckMsg(message);
+        if (jsonObject != null) {
+            try {
+                String receiveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接受者id
+                String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
+                String currentUserId = AuthDataUtils.getInstance().getLoginUserId();
+                if (TextUtils.isEmpty(currentUserId)) {
+                    return false;
+                }
+                //发送者和领取者都不是自己-
+                if (!currentUserId.equals(receiveUserId) && !currentUserId.equals(sendUserId)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        return false;
+    }
+
 
 }

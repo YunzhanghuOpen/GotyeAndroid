@@ -36,12 +36,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.easemob.redpacketsdk.bean.RPUserBean;
-import com.easemob.redpacketsdk.bean.RedPacketInfo;
-import com.easemob.redpacketsdk.constant.RPConstant;
-import com.easemob.redpacketui.callback.GroupMemberCallback;
-import com.easemob.redpacketui.callback.NotifyGroupMemberCallback;
-import com.easemob.redpacketui.utils.RPGroupMemberUtil;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -77,7 +71,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.RedPacketConstant;
-import utils.RedPacketUtil;
 
 public class ChatPage extends FragmentActivity implements OnClickListener {
     public static final int REALTIMEFROM_OTHER = 2;
@@ -825,58 +818,6 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
             default:
                 break;
         }
-    }
-
-    //点击红包，传值到红包sdk
-    private void toRedPacket() {
-        RedPacketInfo mRedPacketInfo=new RedPacketInfo();
-        //传递参数到红包sdk：发送者头像url，昵称（缺失则传id）
-        String fromAvatarUrl = currentLoginUser.getIcon().getPath();
-        String fromNickName = currentLoginUser.getNickname();
-
-        mRedPacketInfo.fromAvatarUrl = TextUtils.isEmpty(fromAvatarUrl) ? "none" :fromAvatarUrl;
-        mRedPacketInfo.fromNickName = TextUtils.isEmpty(fromNickName) ? currentLoginUser.getName() : fromNickName;
-
-        if (chatType == 0) {
-            mRedPacketInfo.chatType= RPConstant.CHATTYPE_SINGLE;
-            mRedPacketInfo.toUserId=user.getName();//接收人id(这里没有id传name)
-        } else {
-            //如果是群聊传递群id和群人数
-            mRedPacketInfo.chatType= RPConstant.CHATTYPE_GROUP;//群聊
-            mRedPacketInfo.toGroupId=String.valueOf(group.getGroupID());//群ID
-            mRedPacketInfo.groupMemberCount=mAllMembers.size();//群成员人数
-            RPGroupMemberUtil.getInstance().setGroupMemberListener(new NotifyGroupMemberCallback() {
-                @Override
-                public void getGroupMember(final String groupID, final GroupMemberCallback mCallBack) {
-
-                    List<RPUserBean> userBeanList = new ArrayList<RPUserBean>();
-                    if (mAllMembers != null && mAllMembers.size() != 0) {
-                        for (int i = 0; i < mAllMembers.size(); i++) {
-                            RPUserBean userBean = new RPUserBean();
-                            userBean.userId = mAllMembers.get(i).getName();
-                            if (userBean.userId.equals(currentLoginUser.getName())) {
-                                continue;
-                            }
-                            GotyeUser memberUser = mAllMembers.get(i);
-                            if (memberUser != null) {
-                                userBean.userAvatar = TextUtils.isEmpty(memberUser.getIcon().getPath()) ? "none" : memberUser.getIcon().getPath();
-                                userBean.userNickname = TextUtils.isEmpty(memberUser.getNickname()) ? memberUser.getName() : memberUser.getNickname();
-                            } else {
-                                userBean.userNickname = userBean.userId;
-                                userBean.userAvatar = "none";
-                            }
-                            userBeanList.add(userBean);
-                        }
-                        mCallBack.setGroupMember(userBeanList);
-                    } else {
-                        mCallBack.setGroupMember(null);
-                    }
-
-                }
-            });
-        }
-
-        RedPacketUtil.startRedPacketActivityForResult(this, mRedPacketInfo,currentLoginUser.getName(), REQUEST_REDPACKET);
     }
 
     public void showImagePrev(GotyeMessage message) {

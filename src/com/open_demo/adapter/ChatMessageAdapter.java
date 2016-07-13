@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,11 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
-import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
 import com.gotye.api.GotyeMessage;
 import com.gotye.api.GotyeMessageStatus;
@@ -35,6 +32,7 @@ import com.open_demo.util.BitmapUtil;
 import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.GotyeVoicePlayClickPlayListener;
 import com.open_demo.util.ImageCache;
+import com.open_demo.util.RedPacketUtil;
 import com.open_demo.util.TimeUtil;
 import com.open_demo.util.ToastUtil;
 
@@ -42,8 +40,6 @@ import java.io.File;
 import java.util.List;
 
 import utils.RedPacketConstant;
-import utils.RedPacketUtil;
-import utils.RedPacketUtil.OpenRedPacketSuccess;
 
 
 public class ChatMessageAdapter extends BaseAdapter {
@@ -60,10 +56,10 @@ public class ChatMessageAdapter extends BaseAdapter {
 
 
     //收发红包的type
-    public static final int TYPE_SEND_REDPACKET = 8;
-    public static final int TYPE_RECEIVE_REDPACKET = 9;
+    public static final int TYPE_SEND_RED_PACKET = 8;
+    public static final int TYPE_RECEIVE_RED_PACKET = 9;
     //红包回执
-    public static final int TYPE_RECEIVE_REDPACKET_ACK = 10;
+    public static final int TYPE_RECEIVE_RED_PACKET_ACK = 10;
 
     public static final int MESSAGE_DIRECT_RECEIVE = 1;
     public static final int MESSAGE_DIRECT_SEND = 0;
@@ -144,16 +140,13 @@ public class ChatMessageAdapter extends BaseAdapter {
     public int getItemViewType(int position) {
         GotyeMessage message = getItem(position);
         if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
+
             if (CheckRedPacketMessageUtil.isRedPacketMessage(message) != null) {
-
-
-                return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_REDPACKET
-                        : TYPE_SEND_REDPACKET;
+                return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_RED_PACKET
+                        : TYPE_SEND_RED_PACKET;
             } else if (CheckRedPacketMessageUtil.isRedPacketAckedMessage(message) != null) {
-
-                return TYPE_RECEIVE_REDPACKET_ACK;
+                return TYPE_RECEIVE_RED_PACKET_ACK;
             }
-
 
             return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_TEXT
                     : TYPE_SEND_TEXT;
@@ -181,7 +174,7 @@ public class ChatMessageAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final GotyeMessage message = getItem(position);
-        JSONObject jsonRedPacket = CheckRedPacketMessageUtil.isRedPacketMessage(message);
+        org.json.JSONObject jsonRedPacket = RedPacketUtil.isRedPacketMsg(message);
         JSONObject jsonRedPacketAcked = CheckRedPacketMessageUtil.isRedPacketAckedMessage(message);
         final ViewHolder holder;
         if (convertView == null) {
@@ -327,7 +320,7 @@ public class ChatMessageAdapter extends BaseAdapter {
     }
 
     //红包消息的显示和点击事件
-    private void handleRedPacketMessage(final GotyeMessage message, ViewHolder holder, int position, View convertView, final JSONObject jsonRedPacket) {
+    private void handleRedPacketMessage(final GotyeMessage message, ViewHolder holder, int position, View convertView, final org.json.JSONObject jsonRedPacket) {
         try {
             String sponsorName = jsonRedPacket.getString(RedPacketConstant.EXTRA_SPONSOR_NAME);
             String greetings = jsonRedPacket.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
@@ -343,65 +336,76 @@ public class ChatMessageAdapter extends BaseAdapter {
             }
 
 
-
             holder.bubble.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    JSONObject jsonObject = new JSONObject();
-                    String toAvatarUrl = chatPage.currentLoginUser.getIcon().getPath();
-                    String toNickName = chatPage.currentLoginUser.getNickname();
-                    toAvatarUrl = TextUtils.isEmpty(toAvatarUrl) ? "none" : toAvatarUrl;
-                    toNickName = TextUtils.isEmpty(toNickName) ? chatPage.currentLoginUser.getName() : toNickName;
-                    jsonObject.put(RedPacketConstant.KEY_TO_AVATAR_URL, toAvatarUrl);
-                    jsonObject.put(RedPacketConstant.KEY_TO_NICK_NAME, toNickName);
-                    jsonObject.put(RedPacketConstant.KEY_CURRENT_ID, chatPage.currentLoginUser.getName());
-                    if (getDirect(message) == MESSAGE_DIRECT_RECEIVE) {
-                        jsonObject.put(RedPacketConstant.KEY_MESSAGE_DIRECT, RPConstant.MESSAGE_DIRECT_RECEIVE);
-                    } else {
-                        jsonObject.put(RedPacketConstant.KEY_MESSAGE_DIRECT, RPConstant.MESSAGE_DIRECT_SEND);
+                    String moneyMsgDirect;
+                    if (getDirect(message) == MESSAGE_DIRECT_RECEIVE) {//红包接收方
+                        moneyMsgDirect = RPConstant.MESSAGE_DIRECT_RECEIVE;
+                    } else {//红包发送方
+                        moneyMsgDirect = RPConstant.MESSAGE_DIRECT_SEND;
                     }
-                    String moneyID = jsonRedPacket.getString(RPConstant.EXTRA_RED_PACKET_ID);
-                    jsonObject.put(RPConstant.EXTRA_RED_PACKET_ID, moneyID);
-                    jsonObject.put(RedPacketConstant.KEY_CURRENT_ID,chatPage.currentLoginUser.getName());
-                    if (chatPage.chatType == 0) {
-
-                        jsonObject.put("chatType", 1);
-                    } else if (chatPage.chatType == 2) {
-
-                        jsonObject.put("chatType", 2);
-                    }
-                    String specialAvatarUrl = "none";
-                    String specialNickname = "";
-                    String packetType = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
-                    String specialReceiveId = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID);
-                    if (!TextUtils.isEmpty(packetType) && packetType.equals(RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
-                        GotyeUser userTemp=new GotyeUser();
-                        userTemp.setName(specialReceiveId);
-                        GotyeUser user = api.getUserDetail(userTemp,false);
-
-                        if (user != null) {
-                            specialAvatarUrl = TextUtils.isEmpty(user.getIcon().getPath()) ? "none" : user.getIcon().getPath();
-                            specialNickname = TextUtils.isEmpty(user.getNickname()) ? user.getName() : user.getNickname();
-                        } else {
-                            specialNickname = specialReceiveId;
-                        }
-                    }
-                    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID,specialReceiveId);
-                    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE,packetType);
-                    jsonObject.put(RedPacketConstant.KEY_SPECIAL_AVATAR_URL,specialAvatarUrl);
-                    jsonObject.put(RedPacketConstant.KEY_SPECIAL_NICK_NAME,specialNickname);
-                    RedPacketUtil.openRedPacket(chatPage, jsonObject, new OpenRedPacketSuccess() {
-
-                        @Override
-                        public void onSuccess(String senderId, String senderNickname) {
-                            chatPage.sendRedPacketAckMessage(senderId, senderNickname);
-                        }
-                    });
-
+                    com.open_demo.util.RedPacketUtil.openRedPacket(chatPage, jsonRedPacket, moneyMsgDirect, api);
                 }
             });
+//            holder.bubble.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    JSONObject jsonObject = new JSONObject();
+//                    String toAvatarUrl = chatPage.currentLoginUser.getIcon().getPath();
+//                    String toNickName = chatPage.currentLoginUser.getNickname();
+//                    toAvatarUrl = TextUtils.isEmpty(toAvatarUrl) ? "none" : toAvatarUrl;
+//                    toNickName = TextUtils.isEmpty(toNickName) ? chatPage.currentLoginUser.getName() : toNickName;
+//                    jsonObject.put(RedPacketConstant.KEY_TO_AVATAR_URL, toAvatarUrl);
+//                    jsonObject.put(RedPacketConstant.KEY_TO_NICK_NAME, toNickName);
+//                    jsonObject.put(RedPacketConstant.KEY_CURRENT_ID, chatPage.currentLoginUser.getName());
+//                    if (getDirect(message) == MESSAGE_DIRECT_RECEIVE) {
+//                        jsonObject.put(RedPacketConstant.KEY_MESSAGE_DIRECT, RPConstant.MESSAGE_DIRECT_RECEIVE);
+//                    } else {
+//                        jsonObject.put(RedPacketConstant.KEY_MESSAGE_DIRECT, RPConstant.MESSAGE_DIRECT_SEND);
+//                    }
+//                    String moneyID = jsonRedPacket.getString(RPConstant.EXTRA_RED_PACKET_ID);
+//                    jsonObject.put(RPConstant.EXTRA_RED_PACKET_ID, moneyID);
+//                    jsonObject.put(RedPacketConstant.KEY_CURRENT_ID, chatPage.currentLoginUser.getName());
+//                    if (chatPage.chatType == 0) {
+//
+//                        jsonObject.put("chatType", 1);
+//                    } else if (chatPage.chatType == 2) {
+//
+//                        jsonObject.put("chatType", 2);
+//                    }
+//                    String specialAvatarUrl = "none";
+//                    String specialNickname = "";
+//                    String packetType = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+//                    String specialReceiveId = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID);
+//                    if (!TextUtils.isEmpty(packetType) && packetType.equals(RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+//                        GotyeUser userTemp = new GotyeUser();
+//                        userTemp.setName(specialReceiveId);
+//                        GotyeUser user = api.getUserDetail(userTemp, false);
+//
+//                        if (user != null) {
+//                            specialAvatarUrl = TextUtils.isEmpty(user.getIcon().getPath()) ? "none" : user.getIcon().getPath();
+//                            specialNickname = TextUtils.isEmpty(user.getNickname()) ? user.getName() : user.getNickname();
+//                        } else {
+//                            specialNickname = specialReceiveId;
+//                        }
+//                    }
+//                    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID, specialReceiveId);
+//                    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE, packetType);
+//                    jsonObject.put(RedPacketConstant.KEY_SPECIAL_AVATAR_URL, specialAvatarUrl);
+//                    jsonObject.put(RedPacketConstant.KEY_SPECIAL_NICK_NAME, specialNickname);
+//                    RedPacketUtil.openRedPacket(chatPage, jsonObject, new OpenRedPacketSuccess() {
+//
+//                        @Override
+//                        public void onSuccess(String senderId, String senderNickname) {
+//                            chatPage.sendRedPacketAckMessage(senderId, senderNickname);
+//                        }
+//                    });
+//
+//                }
+//            });
 
-        } catch (JSONException e) {
+        } catch (org.json.JSONException e) {
             e.printStackTrace();
         }
     }
@@ -812,7 +816,7 @@ public class ChatMessageAdapter extends BaseAdapter {
         TextView tv_money_greeting;
         TextView tv_sponsor_name;
         TextView tv_money_msg;
-        TextView  tv_packet_type ;
+        TextView tv_packet_type;
     }
 
     public void refreshData(List<GotyeMessage> list) {
