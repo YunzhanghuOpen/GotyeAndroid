@@ -144,18 +144,18 @@ public class MessageListAdapter extends BaseAdapter {
                     content = "[" + messageFragment.getActivity().getResources().getString(R.string.gotye_luckymoney) + "]"+greetings;
                 } else if (redpacketAckJSON != null) {
                     String currentUserId = currentLoginUser.getName();   //当前登陆用户id
-                    String recieveUserId = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
-                    String recieveUserNick = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+                    String receiveUserId = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
+                    String receiveUserNick = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
                     String sendUserId = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
                     String sendUserNick = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
                     //发送者和领取者都是自己-
-                    if (currentUserId.equals(recieveUserId) && currentUserId.equals(sendUserId)) {
+                    if (currentUserId.equals(receiveUserId) && currentUserId.equals(sendUserId)) {
                         content = messageFragment.getActivity().getResources().getString(R.string.money_msg_take_money);
 
                     } else if (currentUserId.equals(sendUserId)) {
                         //我仅仅是发送者
-                        content = String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_someone_take_money), recieveUserNick);
-                    } else if (currentUserId.equals(recieveUserId)) {
+                        content = String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_someone_take_money), receiveUserNick);
+                    } else if (currentUserId.equals(receiveUserId)) {
                         //我仅仅是接收者
                         content = String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_take_someone_money), sendUserNick);
                     }

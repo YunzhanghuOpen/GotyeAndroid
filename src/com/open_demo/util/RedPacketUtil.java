@@ -1,4 +1,4 @@
-package utils;
+package com.open_demo.util;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,30 +9,80 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.easemob.redpacketsdk.bean.AuthData;
+import com.easemob.redpacketsdk.bean.RPUserBean;
 import com.easemob.redpacketsdk.bean.RedPacketInfo;
 import com.easemob.redpacketsdk.constant.RPConstant;
+import com.easemob.redpacketui.callback.GroupMemberCallback;
+import com.easemob.redpacketui.callback.NotifyGroupMemberCallback;
 import com.easemob.redpacketui.ui.activity.RPChangeActivity;
 import com.easemob.redpacketui.ui.activity.RPRedPacketActivity;
+import com.easemob.redpacketui.utils.RPGroupMemberUtil;
 import com.easemob.redpacketui.utils.RPOpenPacketUtil;
+import com.gotye.api.GotyeUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import utils.AuthDataUtils;
+import utils.RedPacketConstant;
 
 /**
  * Created by ustc on 2016/5/31.
  */
 public class RedPacketUtil {
 
-    /**
-     * 进入发红包页面
-     *
-     * @param activity
-     * @param mRedPacketInfo
-     * @param mCurrentId
-     * @param requestCode
-     */
-    public static void startRedPacketActivityForResult(Activity activity, RedPacketInfo mRedPacketInfo, String mCurrentId, int requestCode) {
+    public static void startRedPacketActivityForResult(Activity activity, int chatType, String toId, final GotyeUser mCurrentUser, int requestCode, final List<GotyeUser> mAllMembers) {
+        RedPacketInfo mRedPacketInfo = new RedPacketInfo();
+        //传递参数到红包sdk：发送者头像url，昵称（缺失则传id）
+        String fromAvatarUrl = mCurrentUser.getIcon().getPath();
+        String fromNickName = mCurrentUser.getNickname();
+
+        mRedPacketInfo.fromAvatarUrl = TextUtils.isEmpty(fromAvatarUrl) ? "none" : fromAvatarUrl;
+        mRedPacketInfo.fromNickName = TextUtils.isEmpty(fromNickName) ? mCurrentUser.getName() : fromNickName;
+
+        if (chatType == 0) {//单聊
+            mRedPacketInfo.chatType = RPConstant.CHATTYPE_SINGLE;
+            mRedPacketInfo.toUserId = toId;//接收人id(这里没有id传name)
+        } else {//群聊
+            //如果是群聊传递群id和群人数
+            mRedPacketInfo.chatType = RPConstant.CHATTYPE_GROUP;//群聊
+            mRedPacketInfo.toGroupId = toId;//群ID
+            mRedPacketInfo.groupMemberCount = mAllMembers.size();//群成员人数
+            //实现群成员接口
+            RPGroupMemberUtil.getInstance().setGroupMemberListener(new NotifyGroupMemberCallback() {
+                @Override
+                public void getGroupMember(final String groupID, final GroupMemberCallback mCallBack) {
+
+                    List<RPUserBean> userBeanList = new ArrayList<RPUserBean>();
+                    if (mAllMembers != null && mAllMembers.size() != 0) {
+                        for (int i = 0; i < mAllMembers.size(); i++) {
+                            RPUserBean rpUserBean = new RPUserBean();
+                            GotyeUser gotyeUser = mAllMembers.get(i);
+                            if (gotyeUser.getName().equals(mCurrentUser.getName())) {
+                                continue;
+                            }
+                            rpUserBean.userId = gotyeUser.getName();
+                            if (gotyeUser != null) {
+                                rpUserBean.userAvatar = TextUtils.isEmpty(gotyeUser.getIcon().getPath()) ? "none" : gotyeUser.getIcon().getPath();
+                                rpUserBean.userNickname = TextUtils.isEmpty(gotyeUser.getNickname()) ? gotyeUser.getName() : gotyeUser.getNickname();
+                            } else {
+                                rpUserBean.userNickname = rpUserBean.userId;
+                                rpUserBean.userAvatar = "none";
+                            }
+                            userBeanList.add(rpUserBean);
+                        }
+                        mCallBack.setGroupMember(userBeanList);
+                    } else {
+                        mCallBack.setGroupMember(null);
+                    }
+
+                }
+            });
+        }
 
         Intent intent = new Intent(activity, RPRedPacketActivity.class);
         intent.putExtra(RPConstant.EXTRA_MONEY_INFO, mRedPacketInfo);
-        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, AuthDataUtils.getInstance().getAuthData(mCurrentId));
+        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, AuthDataUtils.getInstance().getAuthData(mCurrentUser.getName()));
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -89,7 +139,7 @@ public class RedPacketUtil {
 
             @Override
             public void onError(String code, String message) {
-                Toast.makeText(activity,"",Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "", Toast.LENGTH_SHORT).show();
             }
         });
     }

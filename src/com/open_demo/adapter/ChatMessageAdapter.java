@@ -410,17 +410,17 @@ public class ChatMessageAdapter extends BaseAdapter {
     private void handleRedPacketAckedMessage(GotyeMessage message, ViewHolder holder, int position, JSONObject jsonObject) {
 
         String currentUserId = chatPage.currentLoginUser.getName();   //当前登陆用户id
-        String recieveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
-        String recieveUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+        String receiveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
+        String receiveUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
         String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
         String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
         //发送者和领取者都是自己-
-        if (currentUserId.equals(recieveUserId) && currentUserId.equals(sendUserId)) {
+        if (currentUserId.equals(receiveUserId) && currentUserId.equals(sendUserId)) {
             holder.tv_money_msg.setText(chatPage.getResources().getString(R.string.money_msg_take_money));
         } else if (currentUserId.equals(sendUserId)) {
             //我仅仅是发送者
-            holder.tv_money_msg.setText(String.format(chatPage.getResources().getString(R.string.money_msg_someone_take_money), recieveUserNick));
-        } else if (currentUserId.equals(recieveUserId)) {
+            holder.tv_money_msg.setText(String.format(chatPage.getResources().getString(R.string.money_msg_someone_take_money), receiveUserNick));
+        } else if (currentUserId.equals(receiveUserId)) {
             //我仅仅是接收者
             holder.tv_money_msg.setText(String.format(chatPage.getResources().getString(R.string.money_msg_take_someone_money), sendUserNick));
         }

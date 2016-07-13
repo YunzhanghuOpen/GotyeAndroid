@@ -201,7 +201,7 @@
                 android:src="@drawable/take_photo_selector"
                 />
             <ImageView
-                android:id="@+id/to_redpacket"
+                android:id="@+id/to_red_packet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
