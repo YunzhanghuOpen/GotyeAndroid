@@ -1,0 +1,1298 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    background-color: white;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+* {
+	-webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title><h1>
+    亲加云通讯集成
+</h1>
+<h2>
+    1.导入亲加云的红包SDK
+</h2>
+
+<h2>
+   2</title>
+
+</head>
+<body>
+<h1>
+
+    亲加云通讯集成
+
+</h1>
+
+
+
+
+<h2>
+
+    1.导入亲加云的红包SDK
+
+</h2>
+
+
+
+
+<h2>
+
+   2.在MyApplication.java中初始化红包
+
+</h2>
+
+
+
+
+<pre class="brush:java;toolbar:false">
+@Override
+
+public void onCreate() {
+
+    super.onCreate();
+
+    
+
+    ....
+
+    
+
+    RedPacket.getInstance().initContext(this);
+
+    AuthDataUtils.init(this);
+
+}</pre>
+
+
+
+
+<h2>
+
+    3.调用异步任务，获取红包SDK相关参数<br/>
+
+</h2>
+
+
+
+
+<h3>
+
+    &nbsp;在WelcomePage.java中添加：<br/>
+
+</h3>
+
+
+
+
+<pre class="brush:java;toolbar:false">   
+
+private GotyeDelegate mDelegate = new GotyeDelegate() {
+
+
+
+    public void onLogin(int code, GotyeUser user) {
+
+        ProgressDialogUtil.dismiss();
+
+        // 判断登陆是否成功
+
+        if (code == GotyeStatusCode.CodeOK //0
+
+                || code == GotyeStatusCode.CodeReloginOK //5
+
+                || code == GotyeStatusCode.CodeOfflineLoginOK) {  //6
+
+
+
+           ....
+
+           
+
+            new RequestTask(getApplicationContext(),hasUserName).execute();
+
+            .....
+
+        } else {
+
+            .....
+
+        }
+
+    }
+
+
+
+   .....
+
+};</pre>
+
+
+
+
+<h2>
+
+    4.清单文件中注册红包相关页面
+
+</h2>
+
+
+
+
+<pre class="brush:java;toolbar:false">&lt;!--红包相关界面--&gt;
+
+&lt;activity
+
+    android:name=&quot;com.yunzhanghu.redpacketui.ui.activity.RPRedPacketActivity&quot;
+
+    android:screenOrientation=&quot;portrait&quot;
+
+    android:theme=&quot;@android:style/Theme.NoTitleBar&quot;
+
+    android:windowSoftInputMode=&quot;adjustPan|stateVisible&quot; /&gt;
+
+&lt;activity
+
+    android:name=&quot;com.yunzhanghu.redpacketui.ui.activity.RPDetailActivity&quot;
+
+    android:screenOrientation=&quot;portrait&quot;
+
+    android:theme=&quot;@android:style/Theme.NoTitleBar&quot;
+
+    android:windowSoftInputMode=&quot;adjustPan&quot; /&gt;
+
+&lt;activity
+
+    android:name=&quot;com.yunzhanghu.redpacketui.ui.activity.RPRecordActivity&quot;
+
+    android:screenOrientation=&quot;portrait&quot;
+
+    android:theme=&quot;@android:style/Theme.NoTitleBar&quot;
+
+    android:windowSoftInputMode=&quot;adjustPan&quot; /&gt;
+
+&lt;activity
+
+    android:name=&quot;com.yunzhanghu.redpacketui.ui.activity.RPWebViewActivity&quot;
+
+    android:screenOrientation=&quot;portrait&quot;
+
+    android:theme=&quot;@android:style/Theme.NoTitleBar&quot;
+
+    android:windowSoftInputMode=&quot;adjustResize|stateHidden&quot; /&gt;
+
+&lt;activity
+
+    android:name=&quot;com.yunzhanghu.redpacketui.ui.activity.RPChangeActivity&quot;
+
+    android:screenOrientation=&quot;portrait&quot;
+
+    android:theme=&quot;@android:style/Theme.NoTitleBar&quot;
+
+    android:windowSoftInputMode=&quot;adjustResize|stateHidden&quot; /&gt;
+
+&lt;activity
+
+    android:name=&quot;com.yunzhanghu.redpacketui.ui.activity.RPBankCardActivity&quot;
+
+    android:screenOrientation=&quot;portrait&quot;
+
+    android:theme=&quot;@android:style/Theme.NoTitleBar&quot;
+
+    android:windowSoftInputMode=&quot;adjustPan|stateHidden&quot;&gt;&lt;/activity&gt;
+
+&lt;activity
+
+    android:name=&quot;com.yunzhanghu.redpacketui.ui.activity.RPGroupMemberActivity&quot;
+
+    android:screenOrientation=&quot;portrait&quot;
+
+    android:theme=&quot;@android:style/Theme.NoTitleBar&quot;
+
+    android:windowSoftInputMode=&quot;adjustPan|stateHidden&quot; /&gt;
+
+&lt;activity
+
+    android:name=&quot;com.alipay.sdk.app.H5PayActivity&quot;
+
+    android:configChanges=&quot;orientation|keyboardHidden|navigation|screenSize&quot;
+
+    android:exported=&quot;false&quot;
+
+    android:screenOrientation=&quot;behind&quot;
+
+    android:windowSoftInputMode=&quot;adjustResize|stateHidden&quot; /&gt;
+
+&lt;!--红包相关界面end--&gt;</pre>
+
+
+
+
+<h2 style="text-align: left;">
+
+    5.在ChatPage.java 设置监听(点击后进入发送红包页)，回调后(发送红包消息)
+
+</h2>
+
+
+
+
+<h3>
+
+    &nbsp;5.1 设置点击监听
+
+</h3>
+
+
+
+
+<pre class="brush:java;toolbar:false">
+
+在layout/gotye_activity_chat.xml加入红包按钮&quot;@+id/to_redpacket&quot;
+
+
+
+//设置监听
+
+@Override
+
+    public void onClick(View arg0) {
+
+        switch (arg0.getId()) {
+
+           
+
+            ......
+
+            
+
+           case R.id.to_red_packet:
+                String toId="";
+                if (chatType==0){
+                    toId=user.getName();
+                }else if (chatType==2){
+                    toId=String.valueOf(group.getId());
+                }
+                 RedPacketUtil.startRedPacketActivityForResult(this,chatType,
+                 toId,currentLoginUser,REQUEST_REDPACKET,mAllMembers);
+
+            ......
+
+        }
+
+    }</pre>
+
+
+
+
+<h3>
+
+    &nbsp;5.2点击后进入发送红包页
+
+</h3>
+
+
+
+
+<pre class="brush:java;toolbar:false">//点击红包，传值到红包sdk
+
+ public static void startRedPacketActivityForResult(Activity activity, int chatType, String toId, final GotyeUser mCurrentUser, int requestCode, final List<GotyeUser> mAllMembers) {
+        RedPacketInfo mRedPacketInfo = new RedPacketInfo();
+        //传递参数到红包sdk：发送者头像url，昵称（缺失则传id）
+        String fromAvatarUrl = mCurrentUser.getIcon().getPath();
+        String fromNickName = mCurrentUser.getNickname();
+
+        mRedPacketInfo.fromAvatarUrl = TextUtils.isEmpty(fromAvatarUrl) ? "none" : fromAvatarUrl;
+        mRedPacketInfo.fromNickName = TextUtils.isEmpty(fromNickName) ? mCurrentUser.getName() : fromNickName;
+
+        if (chatType == 0) {//单聊
+            mRedPacketInfo.chatType = RPConstant.CHATTYPE_SINGLE;
+            mRedPacketInfo.toUserId = toId;//接收人id(这里没有id传name)
+        } else {//群聊
+            //如果是群聊传递群id和群人数
+            mRedPacketInfo.chatType = RPConstant.CHATTYPE_GROUP;//群聊
+            mRedPacketInfo.toGroupId = toId;//群ID
+            mRedPacketInfo.groupMemberCount = mAllMembers.size();//群成员人数
+            //实现群成员接口
+            RPGroupMemberUtil.getInstance().setGroupMemberListener(new NotifyGroupMemberCallback() {
+                @Override
+                public void getGroupMember(final String groupID, final GroupMemberCallback mCallBack) {
+
+                    List<RPUserBean> userBeanList = new ArrayList<RPUserBean>();
+                    if (mAllMembers != null && mAllMembers.size() != 0) {
+                        for (int i = 0; i < mAllMembers.size(); i++) {
+                            RPUserBean rpUserBean = new RPUserBean();
+                            GotyeUser gotyeUser = mAllMembers.get(i);
+                            if (gotyeUser.getName().equals(mCurrentUser.getName())) {
+                                continue;
+                            }
+                            rpUserBean.userId = gotyeUser.getName();
+                            if (gotyeUser != null) {
+                                rpUserBean.userAvatar = TextUtils.isEmpty(gotyeUser.getIcon().getPath()) ?
+                                 "none" : gotyeUser.getIcon().getPath();
+                                rpUserBean.userNickname = TextUtils.isEmpty(gotyeUser.getNickname()) ? 
+                                gotyeUser.getName() : gotyeUser.getNickname();
+                            } else {
+                                rpUserBean.userNickname = rpUserBean.userId;
+                                rpUserBean.userAvatar = "none";
+                            }
+                            userBeanList.add(rpUserBean);
+                        }
+                        mCallBack.setGroupMember(userBeanList);
+                    } else {
+                        mCallBack.setGroupMember(null);
+                    }
+
+                }
+            });
+        }
+
+        Intent intent = new Intent(activity, RPRedPacketActivity.class);
+        intent.putExtra(RPConstant.EXTRA_RED_PACKET_INFO, mRedPacketInfo);
+        intent.putExtra(RPConstant.EXTRA_TOKEN_DATA, TokenUtils.getInstance().getTokenData(mCurrentUser.getName()));
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+}</pre>
+
+
+
+
+<h3>
+
+    &nbsp;5.3 回调后发送红包消息
+
+</h3>
+
+
+
+
+<pre class="brush:java;toolbar:false">//回调
+
+@Override
+
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+...
+
+ if(requestCode == REQUEST_REDPACKET) {
+
+        if (resultCode == RESULT_OK) {
+
+            if (data != null) {
+
+                sendRedPacketMessage(data);
+
+            }
+
+        }
+
+    }
+
+    // TODO 获取图片失败
+
+    super.onActivityResult(requestCode, resultCode, data);
+
+}
+
+
+
+//发送红包消息
+
+private void sendRedPacketMessage(Intent data) {
+
+    String specialReceiveId = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);
+
+    String redPacketType = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_TYPE);
+
+    String greetings = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+
+    String moneyID = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_ID);
+
+    String content = &quot;[&quot; + getResources().getString(R.string.gotye_luckymoney) + &quot;]&quot; + greetings;
+
+
+
+    JSONObject jsonObject = new JSONObject();
+
+    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE, true);
+
+    jsonObject.put(RedPacketConstant.EXTRA_SPONSOR_NAME, getResources().getString(R.string.gotye_luckymoney));
+
+    jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_GREETING, greetings);
+
+    jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_ID, moneyID);
+
+    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE, redPacketType);
+
+    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID, specialReceiveId);
+
+
+
+    GotyeMessage toSend = null;
+
+    if (chatType == 0) {
+
+        toSend = GotyeMessage.createTextMessage(currentLoginUser,
+
+                o_user, content);
+
+    } else if (chatType == 2) {
+
+        toSend = GotyeMessage.createTextMessage(currentLoginUser,
+
+                o_group, content);
+
+    }
+
+
+
+    toSend.putExtraData(jsonObject.toJSONString().getBytes());
+
+    // putExtre(toSend);
+
+    int code = api.sendMessage(toSend);
+
+    Log.d(&quot;&quot;, String.valueOf(code));
+
+    adapter.addMsgToBottom(toSend);
+
+    refreshToTail();
+
+
+
+}</pre>
+
+
+<h2 style="text-align: left;">
+
+    6.在ChatMessageAdapter.java中增加收/发红包/领取红包回执消息三种item。
+
+</h2>
+
+
+<h3>
+
+    &nbsp;6.1增加收发红包消息和回执消息类型
+
+</h3>
+
+
+
+
+<pre class="brush:java;toolbar:false">//收发红包的type
+
+public static final int TYPE_SEND_REDPACKET = 8;
+
+public static final int TYPE_RECEIVE_REDPACKET = 9;
+
+//红包回执
+
+public static final int TYPE_RECEIVE_REDPACKET_ACK = 10;
+
+
+
+//红包相关消息是对Text消息进行添加附加数据进行识别区分的
+
+public int getItemViewType(int position) {
+
+    GotyeMessage message = getItem(position);
+
+    if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
+
+        if (CheckRedPacketMessageUtil.isRedPacketMessage(message) != null) {
+
+            return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_REDPACKET
+
+                    : TYPE_SEND_REDPACKET;
+
+        } else if (CheckRedPacketMessageUtil.isRedPacketAckedMessage(message) != null) {
+
+
+
+            return TYPE_RECEIVE_REDPACKET_ACK;
+
+        }
+
+        return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? TYPE_RECEIVE_TEXT
+
+                : TYPE_SEND_TEXT;
+
+    }
+    ...
+
+    
+
+}
+
+public int getViewTypeCount() {
+
+    //8+3
+
+    return 11;
+
+}
+
+@Override
+
+public View getView(int position, View convertView, ViewGroup parent) {
+
+    final GotyeMessage message = getItem(position);
+
+    JSONObject jsonRedPacket = CheckRedPacketMessageUtil.isRedPacketMessage(message);
+
+    JSONObject jsonRedPacketAcked = CheckRedPacketMessageUtil.isRedPacketAckedMessage(message);
+
+    final ViewHolder holder;
+
+    if (convertView == null) {
+
+        holder = new ViewHolder();
+
+        convertView = createViewByMessage(message, position);
+        ...
+
+        if (message.getType() == GotyeMessageType.GotyeMessageTypeText &amp;&amp; jsonRedPacket != null) {
+
+            holder.head_iv = (ImageView) convertView
+
+                    .findViewById(R.id.iv_userhead);
+
+            //红包相关
+
+            holder.bubble = (RelativeLayout) convertView
+
+                    .findViewById(R.id.bubble);
+
+            holder.tv_money_greeting = (TextView) convertView
+
+                    .findViewById(R.id.tv_money_greeting);
+
+            holder.tv_sponsor_name = (TextView) convertView
+
+                    .findViewById(R.id.tv_sponsor_name);
+
+            holder.tv_packet_type = (TextView) convertView
+
+                    .findViewById(R.id.tv_packet_type);
+
+        } else if (message.getType() == GotyeMessageType.GotyeMessageTypeText &amp;&amp; jsonRedPacketAcked != null) {
+
+            holder.head_iv = (ImageView) convertView
+
+                    .findViewById(R.id.iv_userhead);
+
+            holder.tv_money_msg = (TextView) convertView
+
+                    .findViewById(R.id.tv_money_msg);
+
+        } else {
+
+           ....
+
+        }
+
+        convertView.setTag(holder);
+
+    } else {
+
+        holder = (ViewHolder) convertView.getTag();
+
+    }
+
+    switch (message.getType()) {
+
+                ...
+
+        case GotyeMessageTypeText: // 文本
+
+            if (jsonRedPacket != null) {
+
+                //红包消息
+
+                handleRedPacketMessage(message, holder, position, convertView, jsonRedPacket);
+
+            } else if (jsonRedPacketAcked != null) {
+
+                //红包回执消息
+
+                handleRedPacketAckedMessage(message, holder, position, jsonRedPacketAcked);
+
+            } else {
+
+                //普通文本消息
+
+                handleTextMessage(message, holder, position);
+
+            }
+
+
+
+            break;
+            ...
+
+    }
+
+
+
+               
+
+    return convertView;
+
+}
+
+
+
+private View createViewByMessage(GotyeMessage message, int position) {
+
+    switch (message.getType()) {
+
+      ...
+
+        case GotyeMessageTypeText:
+
+            if (CheckRedPacketMessageUtil.isRedPacketMessage(message) != null) {
+
+                return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
+
+                        .inflate(R.layout.gotye_row_received_redpacket, null)
+
+                        : inflater.inflate(R.layout.gotye_row_sent_redpacket, null);
+
+            } else if (CheckRedPacketMessageUtil.isRedPacketAckedMessage(message) != null) {
+
+                return inflater
+
+                        .inflate(R.layout.gotye_row_redpacket_ack, null);
+
+
+
+            }
+
+     ...
+
+    }
+
+}</pre>
+
+
+
+
+<h3>
+
+    &nbsp;6.2红包消息的显示和点击事件（打开红包消息）
+
+</h3>
+
+
+<h4>
+
+    &nbsp;6.2.1红包消息的显示
+
+</h4>
+
+
+<pre class="brush:java;toolbar:false">//红包消息的显示和点击事件
+    private void handleRedPacketMessage(final GotyeMessage message, ViewHolder holder, int position, View convertView, final org.json.JSONObject jsonRedPacket) {
+        try {
+            String sponsorName = jsonRedPacket.getString(RPConstant.EXTRA_SPONSOR_NAME);
+            String greetings = jsonRedPacket.getString(RPConstant.EXTRA_RED_PACKET_GREETING);
+            holder.tv_money_greeting.setText(greetings);
+            holder.tv_sponsor_name.setText(sponsorName);
+            String packetType = jsonRedPacket.getString(RPConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+            if (!TextUtils.isEmpty(packetType) && TextUtils.equals(packetType, RPConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+                holder.tv_packet_type.setVisibility(View.VISIBLE);
+                holder.tv_packet_type.setText(chatPage.getResources().getString(R.string.exclusive_red_packet));
+            } else {
+                holder.tv_packet_type.setVisibility(View.GONE);
+            }
+            holder.bubble.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String moneyMsgDirect;
+                    if (getDirect(message) == MESSAGE_DIRECT_RECEIVE) {//红包接收方
+                        moneyMsgDirect = RPConstant.MESSAGE_DIRECT_RECEIVE;
+                    } else {//红包发送方
+                        moneyMsgDirect = RPConstant.MESSAGE_DIRECT_SEND;
+                    }
+                    RedPacketUtil.openRedPacket(chatPage, jsonRedPacket, moneyMsgDirect, api);
+                }
+            });
+
+        } catch (org.json.JSONException e) {
+            e.printStackTrace();
+        }
+    }</pre>
+
+
+
+
+<h4>
+
+    &nbsp;6.2.2打开红包消息成功发送回执消息（调用ChatPage.java中的sendRedPacketAckMessage发送回执消息）
+
+</h4>
+
+
+<pre class="brush:java;toolbar:false">//红包消息的显示和点击事件
+ public static void openRedPacket(final ChatPage mChatPage, JSONObject jsonRedPacket, String mDirect, GotyeAPI api) {
+
+        try {
+            final ProgressDialog progressDialog = new ProgressDialog(mChatPage);
+            progressDialog.setCanceledOnTouchOutside(false);
+            RedPacketInfo mRedPacketInfo = new RedPacketInfo();
+            GotyeUser mCurrentUser = mChatPage.currentLoginUser;
+            //拆红包者的昵称和头像
+            String toAvatarUrl = mCurrentUser.getIcon().getPath();
+            String toNickName = mCurrentUser.getNickname();
+            mRedPacketInfo.toAvatarUrl = TextUtils.isEmpty(toAvatarUrl) ? "none" : toAvatarUrl;
+            mRedPacketInfo.toNickName = TextUtils.isEmpty(toNickName) ? mCurrentUser.getName() : toNickName;
+            mRedPacketInfo.moneyMsgDirect = mDirect;//红包方向
+            String moneyID = jsonRedPacket.getString(RPConstant.EXTRA_RED_PACKET_ID);
+            mRedPacketInfo.moneyID = moneyID;//红包ID
+            if (mChatPage.chatType == 0) {//单聊
+                mRedPacketInfo.chatType = RPConstant.CHATTYPE_SINGLE;
+            } else if (mChatPage.chatType == 2) {//群聊
+                mRedPacketInfo.chatType = RPConstant.CHATTYPE_GROUP;
+            }
+            String packetType = jsonRedPacket.getString(RPConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+            String specialReceiveId = jsonRedPacket.getString(RPConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID);
+            if (!TextUtils.isEmpty(packetType) && packetType.equals(RPConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+                GotyeUser userTemp = new GotyeUser();
+                userTemp.setName(specialReceiveId);
+                GotyeUser specialUser = api.getUserDetail(userTemp, false);
+                String specialAvatarUrl = "none";
+                String specialNickname = specialReceiveId;
+                if (specialUser != null) {
+                    specialAvatarUrl = TextUtils.isEmpty(specialUser.getIcon().getPath()) ? 
+                    "none" : specialUser.getIcon().getPath();
+                    specialNickname = TextUtils.isEmpty(specialUser.getNickname()) ? 
+                    specialUser.getName() : specialUser.getNickname();
+                }
+                mRedPacketInfo.specialAvatarUrl = specialAvatarUrl;
+                mRedPacketInfo.specialNickname = specialNickname;
+                mRedPacketInfo.toUserId = mChatPage.currentLoginUser.getName();
+            }
+
+            TokenData tokenData = TokenUtils.getInstance().getTokenData(mChatPage.currentLoginUser.getName());
+            RPOpenPacketUtil.getInstance().openRedPacket(mRedPacketInfo, 
+            tokenData, mChatPage, new RPOpenPacketUtil.RPOpenPacketCallBack() {
+                @Override
+                public void onSuccess(String senderId, String senderNickname) {
+                    mChatPage.sendRedPacketAckMessage(senderId, senderNickname); //发送回执消息
+                }
+
+                @Override
+                public void showLoading() {
+                    progressDialog.show();
+                }
+
+                @Override
+                public void hideLoading() {
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onError(String code, String message) {
+                    Toast.makeText(mChatPage, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }</pre>
+
+
+
+
+<h4>
+
+    &nbsp;6.2.3ChatPage.java中的发送回执消息的方法
+
+</h4>
+
+
+<pre class="brush:java;toolbar:false">//红包消息的显示和点击事件
+<pre class="brush:java;toolbar:false">public void sendRedPacketAckMessage(String senderId, String senderNickName) {
+
+    JSONObject jsonObject = new JSONObject();
+
+    jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE, true);
+
+    jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME, senderNickName);
+
+    jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID, senderId);
+
+    jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME, currentLoginUser.getNickname());
+
+    jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID, currentLoginUser.getName());
+
+    String content = &quot;[&quot; + getResources().getString(R.string.gotye_luckymoney) + &quot;]&quot;;
+
+    GotyeMessage toSend = null;
+
+    if (chatType == 0) {
+
+        toSend = GotyeMessage.createTextMessage(currentLoginUser,
+
+                o_user, content);
+
+    } else if (chatType == 2) {
+
+        toSend = GotyeMessage.createTextMessage(currentLoginUser,
+
+                o_group, content);
+
+    }
+
+    toSend.putExtraData(jsonObject.toJSONString().getBytes());
+
+    // putExtre(toSend);
+
+    int code = api.sendMessage(toSend);
+
+    Log.d(&quot;&quot;, String.valueOf(code));
+
+    adapter.addMsgToBottom(toSend);
+
+    refreshToTail();
+
+}</pre></pre>
+
+
+
+
+<h3>
+
+    &nbsp;6.3红包领取回执消息的显示
+
+</h3>
+
+
+
+
+<pre class="brush:java;toolbar:false">private void handleRedPacketAckedMessage(GotyeMessage message, ViewHolder holder, int position, JSONObject jsonObject) {
+
+
+
+    String currentUserId = chatPage.currentLoginUser.getName();   //当前登陆用户id
+
+    String recieveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
+
+    String recieveUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+
+    String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
+
+    String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
+
+    //发送者和领取者都是自己-
+
+    if (currentUserId.equals(recieveUserId) &amp;&amp; currentUserId.equals(sendUserId)) {
+
+        holder.tv_money_msg.setText(chatPage.getResources().getString(R.string.money_msg_take_money));
+
+    } else if (currentUserId.equals(sendUserId)) {
+
+        //我仅仅是发送者
+
+        holder.tv_money_msg.setText(String.format(chatPage.getResources().getString(R.string.money_msg_someone_take_money), recieveUserNick));
+
+    } else if (currentUserId.equals(recieveUserId)) {
+
+        //我仅仅是接收者
+
+        holder.tv_money_msg.setText(String.format(chatPage.getResources().getString(R.string.money_msg_take_someone_money), sendUserNick));
+
+    }
+
+}
+
+
+
+</pre>
+
+
+<h2>
+
+    7.回执消息处理：（不是红包发送者或者红包接受者，收到回执消息直接删除）
+
+</h2>
+
+
+<h3>
+
+    7.1在ChatPage中对回执消息的处理
+
+</h3>
+
+
+<pre class="brush:java;toolbar:false">
+
+
+ @Override
+        public void onReceiveMessage(GotyeMessage message) {
+            String currentUserId = currentLoginUser.getName();   //当前登陆用户id
+            if (!RedPacketUtil.isMyAckMessage(message,currentUserId)) {
+                api.deleteMessage(message);
+                return;
+            }
+            ...
+       }
+
+</pre>
+
+
+<h3>
+
+    7.2在MainActivity中对回执消息的处理
+
+</h3>
+
+
+<pre class="brush:java;toolbar:false">
+
+
+ @Override
+        public void onReceiveMessage(GotyeMessage message) {
+
+            String currentUserId =currentLoginUser.getName();   //当前登陆用户id
+            if(!RedPacketUtil.isMyAckMessage(message,currentUserId)){
+                api.deleteMessage(message);
+                  return;
+            }
+            ...         
+       }
+
+</pre>
+
+
+<h3>
+
+    7.3在GotyeService中对回执消息的处理
+
+</h3>
+
+
+<pre class="brush:java;toolbar:false">
+
+
+   @Override
+        public void onReceiveMessage(GotyeMessage message) {
+            String msg = null;
+            if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
+                JSONObject redPacketJSON = RedPacketUtil.isRedPacketMsg(message);
+                JSONObject redPacketAckJSON = RedPacketUtil.isRedPacketAckMsg(message);
+                if (redPacketJSON != null) {//红包消息
+                    try {
+                        String greetings = redPacketJSON.getString(RPConstant.EXTRA_RED_PACKET_GREETING);
+                        msg = message.getSender().getName() + greetings;
+                    } catch (org.json.JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else if (redPacketAckJSON != null) {//回执消息不push
+                    //红包领取消息不提示
+                    String currentUserId = currentLoginUser.getName();   //当前登陆用户id
+                    if (!RedPacketUtil.isMyAckMessage(message, currentUserId)) {
+                        api.deleteMessage(message);
+                    }
+                    return;
+                } else {
+                    msg = message.getSender().getName() + ":" + message.getText();
+                }
+
+
+            }         
+            ...
+         }
+
+</pre>
+
+
+
+
+<h2>
+
+    8.会话列表改写文本消息： &nbsp;
+
+</h2>
+
+
+
+
+<h3>
+
+    &nbsp;红包消息样式：[红包消息]+祝福语 &nbsp;
+
+</h3>
+
+
+
+
+<h3>
+
+    &nbsp;红包回执消息样式：[红包消息]+xxx领取了xxx的消息&nbsp;
+
+</h3>
+
+
+
+
+<h3>
+
+    &nbsp;其他文本消息正常显示
+
+</h3>
+
+
+
+
+<h3>
+
+    &nbsp;在MessageListAdapter.java中添加代码
+
+</h3>
+
+
+
+
+<pre class="brush:java;toolbar:false">
+public View getView(int arg0, View view, ViewGroup arg2) {
+...
+
+if (lastMsg.getType() == GotyeMessageType.GotyeMessageTypeText) {
+
+      JSONObject redPacketJSON = RedPacketUtil.isRedPacketMsg(lastMsg);
+      JSONObject redPacketAckJSON = RedPacketUtil.isRedPacketAckMsg(lastMsg);
+          try {
+                if (redPacketJSON != null) {//红包
+                String greetings = redPacketJSON.getString(RPConstant.EXTRA_RED_PACKET_GREETING);
+                content = "[" + messageFragment.getActivity().getResources().
+                getString(R.string.gotye_luckymoney) + "]" + greetings;
+                    } else if (redPacketAckJSON != null) {//回执消息
+                        String currentUserId = currentLoginUser.getName();   //当前登陆用户id
+                        String receiveUserId = redPacketAckJSON.getString
+                        (RPConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
+                        String receiveUserNick = redPacketAckJSON.getString
+                        (RPConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+                        String sendUserId = redPacketAckJSON.getString(RPConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
+                        String sendUserNick = redPacketAckJSON.getString(RPConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
+                        //发送者和领取者都是自己-
+                        if (currentUserId.equals(receiveUserId) && currentUserId.equals(sendUserId)) {
+                            content = messageFragment.getActivity().getResources().getString(R.string.money_msg_take_money);
+
+                        } else if (currentUserId.equals(sendUserId)) {
+                            //我仅仅是发送者
+                            content = String.format(messageFragment.getActivity().getResources().
+                            getString(R.string.money_msg_someone_take_money), receiveUserNick);
+                        } else if (currentUserId.equals(receiveUserId)) {
+                            //我仅仅是接收者
+                            content = String.format(messageFragment.getActivity().getResources().
+                            getString(R.string.money_msg_take_someone_money), sendUserNick);
+                        }
+
+                    } else {
+                        content = "文本消息：" + ":" + lastMsg.getText();
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+    }
+ ...
+    </pre>
+
+
+
+
+<h2>
+
+    9.在SettingFragment.java中添加零钱入口
+
+</h2>
+
+
+
+
+<pre class="brush:java;toolbar:false">
+getView().findViewById(R.id.money_layout).setOnClickListener(new OnClickListener() {
+
+    @Override
+
+    public void onClick(View v) {
+
+        String fromNickname = user.getNickname();
+
+        String fromAvatarUrl = user.getIcon().getPath();
+
+        fromAvatarUrl = TextUtils.isEmpty(fromAvatarUrl) ? &quot;none&quot; : fromAvatarUrl;
+
+        fromNickname = TextUtils.isEmpty(fromNickname) ? user.getName() : fromNickname;
+
+        RedPacketUtil.startChangeActivity(getActivity(),fromNickname,fromAvatarUrl,user.getName());
+
+    }
+
+});</pre>
+
+
+
+
+<p>
+
+    <br/>
+
+</p>
+
+</body>
+</html>
