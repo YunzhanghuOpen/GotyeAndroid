@@ -140,7 +140,7 @@ public class SettingFragment extends Fragment {
                 MyApplication.setNewMsgNotify(arg1, user.getName());
             }
         });
-        //零钱
+        // TODO 零钱
         getView().findViewById(R.id.money_layout).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

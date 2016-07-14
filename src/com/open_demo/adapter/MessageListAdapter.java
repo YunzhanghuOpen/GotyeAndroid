@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -27,6 +26,7 @@ import com.open_demo.util.BitmapUtil;
 import com.open_demo.util.ImageCache;
 import com.open_demo.util.RedPacketUtil;
 import com.open_demo.util.TimeUtil;
+import com.yunzhanghu.redpacketsdk.constant.RPConstant;
 
 import org.json.JSONException;
 import org.json.JSONObject;

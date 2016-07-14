@@ -29,7 +29,7 @@
         android:id="@+id/layout_item"
         layout="@layout/rp_details_list_item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_below="@id/layout_top"
         />
 

@@ -55,7 +55,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
         try {
             if (result != null) {
                 JSONObject jsonObj =   JSONObject.parseObject(result);
-                TokenUtils.getInstance().setAuthData(jsonObj,userID);
+                TokenUtils.getInstance().setTokenData(jsonObj,userID);
             }
         } catch (Exception e) {
             e.printStackTrace();

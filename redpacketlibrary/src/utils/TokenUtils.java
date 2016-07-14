@@ -17,7 +17,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.alibaba.fastjson.JSONObject;
-import com.easemob.redpacketsdk.bean.AuthData;
+import com.yunzhanghu.redpacketsdk.bean.TokenData;
 
 public class TokenUtils {
     /**
@@ -53,15 +53,15 @@ public class TokenUtils {
     }
 
 
-    public void setAuthData(JSONObject authData, String userId) {
+    public void setTokenData(JSONObject authData, String userId) {
         editor.putString(userId, authData.toJSONString());
 
         editor.commit();
     }
 
-    public AuthData getAuthData(String userId) {
+    public TokenData getTokenData(String userId) {
         JSONObject jsonObject;
-        AuthData authData = new AuthData();
+        TokenData tokenData = new TokenData();
         String jsonStr = mSharedPreferences.getString(userId, null);
         if (jsonStr != null) {
             jsonObject = JSONObject.parseObject(jsonStr);
@@ -70,13 +70,13 @@ public class TokenUtils {
                 String user_id = jsonObject.getString("user_id");
                 String timestamp = jsonObject.getString("timestamp");
                 String sign = jsonObject.getString("sign");
-                authData.authUserId = user_id;
-                authData.authTimestamp = timestamp;
-                authData.authPartner = partner;
-                authData.authSign = sign;
+                tokenData.appUserId = user_id;
+                tokenData.authTimestamp = timestamp;
+                tokenData.authPartner = partner;
+                tokenData.authSign = sign;
             }
         }
-        return authData;
+        return tokenData;
 
     }
 }

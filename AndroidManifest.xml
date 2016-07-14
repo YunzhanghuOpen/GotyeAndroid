@@ -106,56 +106,52 @@
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
 
-        <!--红包相关界面-->
+        <!--红包相关界面 start-->
         <activity
-            android:name="com.easemob.redpacketui.ui.activity.RPRedPacketActivity"
+            android:name="com.yunzhanghu.redpacketui.ui.activity.RPRedPacketActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustPan|stateVisible" />
         <activity
-
-            android:name="com.easemob.redpacketui.ui.activity.RPDetailActivity"
+            android:name="com.yunzhanghu.redpacketui.ui.activity.RPDetailActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name="com.easemob.redpacketui.ui.activity.RPRecordActivity"
+            android:name="com.yunzhanghu.redpacketui.ui.activity.RPRecordActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name="com.easemob.redpacketui.ui.activity.RPWebViewActivity"
+            android:name="com.yunzhanghu.redpacketui.ui.activity.RPWebViewActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name="com.easemob.redpacketui.ui.activity.RPChangeActivity"
+            android:name="com.yunzhanghu.redpacketui.ui.activity.RPChangeActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
-            android:name="com.easemob.redpacketui.ui.activity.RPBankCardActivity"
+            android:name="com.yunzhanghu.redpacketui.ui.activity.RPBankCardActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
-            android:windowSoftInputMode="adjustPan|stateHidden"></activity>
-
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
-            android:name="com.easemob.redpacketui.ui.activity.RPGroupMemberActivity"
+            android:name="com.yunzhanghu.redpacketui.ui.activity.RPGroupMemberActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            />
-
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="false"
             android:screenOrientation="behind"
-            android:windowSoftInputMode="adjustResize|stateHidden"
-            />
-        <!--红包相关界面end-->
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <!--红包相关界面 end-->
 
         <receiver android:name="com.open_demo.StartServiceReceiver" >
             <intent-filter android:priority="1000" >

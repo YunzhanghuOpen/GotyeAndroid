@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.easemob.redpacketsdk.RedPacket;
 import com.gotye.api.GotyeUser;
+import com.yunzhanghu.redpacketsdk.RedPacket;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -7,21 +7,21 @@ import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import com.easemob.redpacketsdk.bean.AuthData;
-import com.easemob.redpacketsdk.bean.RPUserBean;
-import com.easemob.redpacketsdk.bean.RedPacketInfo;
-import com.easemob.redpacketsdk.constant.RPConstant;
-import com.easemob.redpacketui.callback.GroupMemberCallback;
-import com.easemob.redpacketui.callback.NotifyGroupMemberCallback;
-import com.easemob.redpacketui.ui.activity.RPChangeActivity;
-import com.easemob.redpacketui.ui.activity.RPRedPacketActivity;
-import com.easemob.redpacketui.utils.RPGroupMemberUtil;
-import com.easemob.redpacketui.utils.RPOpenPacketUtil;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeMessage;
 import com.gotye.api.GotyeMessageType;
 import com.gotye.api.GotyeUser;
 import com.open_demo.activity.ChatPage;
+import com.yunzhanghu.redpacketsdk.bean.RPUserBean;
+import com.yunzhanghu.redpacketsdk.bean.RedPacketInfo;
+import com.yunzhanghu.redpacketsdk.bean.TokenData;
+import com.yunzhanghu.redpacketsdk.constant.RPConstant;
+import com.yunzhanghu.redpacketui.callback.GroupMemberCallback;
+import com.yunzhanghu.redpacketui.callback.NotifyGroupMemberCallback;
+import com.yunzhanghu.redpacketui.ui.activity.RPChangeActivity;
+import com.yunzhanghu.redpacketui.ui.activity.RPRedPacketActivity;
+import com.yunzhanghu.redpacketui.utils.RPGroupMemberUtil;
+import com.yunzhanghu.redpacketui.utils.RPOpenPacketUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,8 +94,8 @@ public class RedPacketUtil {
         }
 
         Intent intent = new Intent(activity, RPRedPacketActivity.class);
-        intent.putExtra(RPConstant.EXTRA_MONEY_INFO, mRedPacketInfo);
-        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, TokenUtils.getInstance().getAuthData(mCurrentUser.getName()));
+        intent.putExtra(RPConstant.EXTRA_RED_PACKET_INFO, mRedPacketInfo);
+        intent.putExtra(RPConstant.EXTRA_TOKEN_DATA, TokenUtils.getInstance().getTokenData(mCurrentUser.getName()));
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -143,8 +143,8 @@ public class RedPacketUtil {
                 mRedPacketInfo.toUserId = mChatPage.currentLoginUser.getName();
             }
 
-            AuthData authData = TokenUtils.getInstance().getAuthData(mChatPage.currentLoginUser.getName());
-            RPOpenPacketUtil.getInstance().openRedPacket(mRedPacketInfo, authData, mChatPage, new RPOpenPacketUtil.RPOpenPacketCallBack() {
+            TokenData tokenData = TokenUtils.getInstance().getTokenData(mChatPage.currentLoginUser.getName());
+            RPOpenPacketUtil.getInstance().openRedPacket(mRedPacketInfo, tokenData, mChatPage, new RPOpenPacketUtil.RPOpenPacketCallBack() {
                 @Override
                 public void onSuccess(String senderId, String senderNickname) {
                     mChatPage.sendRedPacketAckMessage(senderId, senderNickname);
@@ -184,8 +184,8 @@ public class RedPacketUtil {
         RedPacketInfo redPacketInfo = new RedPacketInfo();
         redPacketInfo.fromNickName = fromNickname;
         redPacketInfo.fromAvatarUrl = fromAvatarUrl;
-        intent.putExtra(RPConstant.EXTRA_MONEY_INFO, redPacketInfo);
-        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, TokenUtils.getInstance().getAuthData(userId));
+        intent.putExtra(RPConstant.EXTRA_RED_PACKET_INFO, redPacketInfo);
+        intent.putExtra(RPConstant.EXTRA_TOKEN_DATA, TokenUtils.getInstance().getTokenData(userId));
         fragmentActivity.startActivity(intent);
     }
 

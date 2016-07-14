@@ -36,7 +36,6 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
-import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -62,6 +61,7 @@ import com.open_demo.util.ToastUtil;
 import com.open_demo.util.URIUtil;
 import com.open_demo.view.RTPullListView;
 import com.open_demo.view.RTPullListView.OnRefreshListener;
+import com.yunzhanghu.redpacketsdk.constant.RPConstant;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -805,7 +805,6 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
                 api.stopTalk();
                 break;
             case R.id.to_red_packet:
-                //toRedPacket();
                 String toId="";
                 if (chatType==0){
                     toId=user.getName();

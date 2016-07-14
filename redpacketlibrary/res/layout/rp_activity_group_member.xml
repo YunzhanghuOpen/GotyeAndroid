@@ -3,11 +3,11 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:background="@color/money_bg_color"
+                android:orientation="vertical"
     >
 
-    <com.easemob.redpacketui.widget.RPTitleBar
+    <com.yunzhanghu.redpacketui.widget.RPTitleBar
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         android:layout_below="@id/title_bar"
         >
 
-        <com.easemob.redpacketui.recyclerview.widget.RecyclerView
+        <com.yunzhanghu.redpacketui.recyclerview.widget.RecyclerView
             android:id="@+id/contact_member"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -74,7 +74,7 @@
             android:visibility="invisible"
             />
 
-        <com.easemob.redpacketui.widget.RPSideBar
+        <com.yunzhanghu.redpacketui.widget.RPSideBar
             android:id="@+id/contact_sidebar"
             android:layout_width="@dimen/size45px"
             android:layout_height="match_parent"

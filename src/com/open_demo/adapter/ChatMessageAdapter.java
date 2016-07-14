@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTargetType;
 import com.gotye.api.GotyeMessage;
@@ -33,6 +32,7 @@ import com.open_demo.util.ImageCache;
 import com.open_demo.util.RedPacketUtil;
 import com.open_demo.util.TimeUtil;
 import com.open_demo.util.ToastUtil;
+import com.yunzhanghu.redpacketsdk.constant.RPConstant;
 
 import org.json.JSONException;
 

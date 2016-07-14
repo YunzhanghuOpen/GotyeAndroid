@@ -11,7 +11,6 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeDelegate;
 import com.gotye.api.GotyeGroup;
@@ -22,6 +21,7 @@ import com.gotye.api.GotyeUser;
 import com.open_demo.main.MainActivity;
 import com.open_demo.util.AppUtil;
 import com.open_demo.util.RedPacketUtil;
+import com.yunzhanghu.redpacketsdk.constant.RPConstant;
 
 import org.json.JSONObject;
 
