@@ -19,23 +19,22 @@ import android.content.SharedPreferences;
 import com.alibaba.fastjson.JSONObject;
 import com.easemob.redpacketsdk.bean.AuthData;
 
-public class AuthDataUtils {
+public class TokenUtils {
     /**
      * 保存Preference的name
      */
-    public static final String PREFERENCE_NAME = "AuthData";
+    public static final String PREFERENCE_NAME = "TokenData";
     private static SharedPreferences mSharedPreferences;
-    private static AuthDataUtils mPreferenceManager;
+    private static TokenUtils mPreferenceManager;
     private static SharedPreferences.Editor editor;
-    private static String LOGIN_USER_ID="LOGIN_USER_ID";
-    private AuthDataUtils(Context cxt) {
+    private TokenUtils(Context cxt) {
         mSharedPreferences = cxt.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         editor = mSharedPreferences.edit();
     }
 
     public static synchronized void init(Context cxt) {
         if (mPreferenceManager == null) {
-            mPreferenceManager = new AuthDataUtils(cxt);
+            mPreferenceManager = new TokenUtils(cxt);
         }
     }
 
@@ -45,7 +44,7 @@ public class AuthDataUtils {
      * @param
      * @return
      */
-    public synchronized static AuthDataUtils getInstance() {
+    public synchronized static TokenUtils getInstance() {
         if (mPreferenceManager == null) {
             throw new RuntimeException("please init first!");
         }
@@ -60,14 +59,6 @@ public class AuthDataUtils {
         editor.commit();
     }
 
-    public void setLoginUserId(String userId){
-        editor.putString(LOGIN_USER_ID, userId);
-        editor.commit();
-    }
-    public String getLoginUserId(){
-
-        return  mSharedPreferences.getString(LOGIN_USER_ID, "");
-    }
     public AuthData getAuthData(String userId) {
         JSONObject jsonObject;
         AuthData authData = new AuthData();
@@ -87,12 +78,5 @@ public class AuthDataUtils {
         }
         return authData;
 
-    }
-
-
-
-    public void removeCurrentUserInfo(String userId) {
-        editor.remove(userId);
-        editor.commit();
     }
 }

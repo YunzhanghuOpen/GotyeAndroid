@@ -36,6 +36,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
+import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -69,8 +70,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import utils.RedPacketConstant;
 
 public class ChatPage extends FragmentActivity implements OnClickListener {
     public static final int REALTIMEFROM_OTHER = 2;
@@ -363,10 +362,10 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
     }
 
     private void sendRedPacketMessage(Intent data) {
-        String specialReceiveId = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);
-        String redPacketType = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_TYPE);
-        String greetings = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
-        String moneyID = data.getStringExtra(RedPacketConstant.EXTRA_RED_PACKET_ID);
+        String specialReceiveId = data.getStringExtra(RPConstant.EXTRA_RED_PACKET_RECEIVER_ID);
+        String redPacketType = data.getStringExtra(RPConstant.EXTRA_RED_PACKET_TYPE);
+        String greetings = data.getStringExtra(RPConstant.EXTRA_RED_PACKET_GREETING);
+        String moneyID = data.getStringExtra(RPConstant.EXTRA_RED_PACKET_ID);
         System.out.println("redPacketType------->" + redPacketType);
         System.out.println("specialReceiveId------->" + specialReceiveId);
         System.out.println("greetings------->" + greetings);
@@ -376,12 +375,12 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         String content = "[" + getResources().getString(R.string.gotye_luckymoney) + "]" + greetings;
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE, true);
-        jsonObject.put(RedPacketConstant.EXTRA_SPONSOR_NAME, getResources().getString(R.string.gotye_luckymoney));
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_GREETING, greetings);
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_ID, moneyID);
-        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE, redPacketType);
-        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID, specialReceiveId);
+        jsonObject.put(RPConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE, true);
+        jsonObject.put(RPConstant.EXTRA_SPONSOR_NAME, getResources().getString(R.string.gotye_luckymoney));
+        jsonObject.put(RPConstant.EXTRA_RED_PACKET_GREETING, greetings);
+        jsonObject.put(RPConstant.EXTRA_RED_PACKET_ID, moneyID);
+        jsonObject.put(RPConstant.MESSAGE_ATTR_RED_PACKET_TYPE, redPacketType);
+        jsonObject.put(RPConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID, specialReceiveId);
 
         GotyeMessage toSend = null;
         if (chatType == 0) {
@@ -401,11 +400,11 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
 
     public void sendRedPacketAckMessage(String senderId, String senderNickName) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE, true);
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME, senderNickName);
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID, senderId);
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME, currentLoginUser.getNickname());
-        jsonObject.put(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID, currentLoginUser.getName());
+        jsonObject.put(RPConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE, true);
+        jsonObject.put(RPConstant.EXTRA_RED_PACKET_SENDER_NAME, senderNickName);
+        jsonObject.put(RPConstant.EXTRA_RED_PACKET_SENDER_ID, senderId);
+        jsonObject.put(RPConstant.EXTRA_RED_PACKET_RECEIVER_NAME, currentLoginUser.getNickname());
+        jsonObject.put(RPConstant.EXTRA_RED_PACKET_RECEIVER_ID, currentLoginUser.getName());
         String content = "[" + getResources().getString(R.string.gotye_luckymoney) + "]";
         GotyeMessage toSend = null;
         if (chatType == 0) {
@@ -813,7 +812,7 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
                 }else if (chatType==2){
                     toId=String.valueOf(group.getId());
                 }
-                com.open_demo.util.RedPacketUtil.startRedPacketActivityForResult(this,chatType,toId,currentLoginUser,REQUEST_REDPACKET,mAllMembers);
+                RedPacketUtil.startRedPacketActivityForResult(this,chatType,toId,currentLoginUser,REQUEST_REDPACKET,mAllMembers);
                 break;
             default:
                 break;
@@ -1022,7 +1021,7 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         @Override
         public void onReceiveMessage(GotyeMessage message) {
             String currentUserId = currentLoginUser.getName();   //当前登陆用户id
-            if (!RedPacketUtil.isMyAckMessage(message)) {
+            if (!RedPacketUtil.isMyAckMessage(message,currentUserId)) {
                 api.deleteMessage(message);
                 return;
             }

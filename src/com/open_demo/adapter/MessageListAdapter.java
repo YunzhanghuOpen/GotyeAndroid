@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
+import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTarget;
 import com.gotye.api.GotyeChatTargetType;
@@ -25,11 +25,13 @@ import com.open_demo.R;
 import com.open_demo.main.MessageFragment;
 import com.open_demo.util.BitmapUtil;
 import com.open_demo.util.ImageCache;
+import com.open_demo.util.RedPacketUtil;
 import com.open_demo.util.TimeUtil;
 
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import utils.RedPacketConstant;
+import java.util.List;
 
 public class MessageListAdapter extends BaseAdapter {
     private MessageFragment messageFragment;
@@ -136,32 +138,38 @@ public class MessageListAdapter extends BaseAdapter {
 
             if (lastMsg.getType() == GotyeMessageType.GotyeMessageTypeText) {
 
-                JSONObject redpacketJSON = CheckRedPacketMessageUtil.isRedPacketMessage(lastMsg);
-                JSONObject redpacketAckJSON = CheckRedPacketMessageUtil.isRedPacketAckedMessage(lastMsg);
-                if (redpacketJSON != null) {
-                    String greetings = redpacketJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
-                    content = "[" + messageFragment.getActivity().getResources().getString(R.string.gotye_luckymoney) + "]"+greetings;
-                } else if (redpacketAckJSON != null) {
-                    String currentUserId = currentLoginUser.getName();   //当前登陆用户id
-                    String receiveUserId = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
-                    String receiveUserNick = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
-                    String sendUserId = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
-                    String sendUserNick = redpacketAckJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
-                    //发送者和领取者都是自己-
-                    if (currentUserId.equals(receiveUserId) && currentUserId.equals(sendUserId)) {
-                        content = messageFragment.getActivity().getResources().getString(R.string.money_msg_take_money);
+                JSONObject redPacketJSON = RedPacketUtil.isRedPacketMsg(lastMsg);
+                JSONObject redPacketAckJSON = RedPacketUtil.isRedPacketAckMsg(lastMsg);
+                try {
+                    if (redPacketJSON != null) {//红包
+                        String greetings = redPacketJSON.getString(RPConstant.EXTRA_RED_PACKET_GREETING);
+                        content = "[" + messageFragment.getActivity().getResources().getString(R.string.gotye_luckymoney) + "]" + greetings;
 
-                    } else if (currentUserId.equals(sendUserId)) {
-                        //我仅仅是发送者
-                        content = String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_someone_take_money), receiveUserNick);
-                    } else if (currentUserId.equals(receiveUserId)) {
-                        //我仅仅是接收者
-                        content = String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_take_someone_money), sendUserNick);
+                    } else if (redPacketAckJSON != null) {//回执消息
+                        String currentUserId = currentLoginUser.getName();   //当前登陆用户id
+                        String receiveUserId = redPacketAckJSON.getString(RPConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接收者id
+                        String receiveUserNick = redPacketAckJSON.getString(RPConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+                        String sendUserId = redPacketAckJSON.getString(RPConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
+                        String sendUserNick = redPacketAckJSON.getString(RPConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
+                        //发送者和领取者都是自己-
+                        if (currentUserId.equals(receiveUserId) && currentUserId.equals(sendUserId)) {
+                            content = messageFragment.getActivity().getResources().getString(R.string.money_msg_take_money);
+
+                        } else if (currentUserId.equals(sendUserId)) {
+                            //我仅仅是发送者
+                            content = String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_someone_take_money), receiveUserNick);
+                        } else if (currentUserId.equals(receiveUserId)) {
+                            //我仅仅是接收者
+                            content = String.format(messageFragment.getActivity().getResources().getString(R.string.money_msg_take_someone_money), sendUserNick);
+                        }
+
+                    } else {
+                        content = "文本消息：" + ":" + lastMsg.getText();
+
                     }
 
-                } else {
-                    content = "文本消息：" + ":" + lastMsg.getText();
-
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
 
             } else if (lastMsg.getType() == GotyeMessageType.GotyeMessageTypeImage) {

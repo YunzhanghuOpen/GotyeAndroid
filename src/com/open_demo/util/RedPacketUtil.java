@@ -29,8 +29,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.AuthDataUtils;
-import utils.RedPacketConstant;
+import utils.TokenUtils;
 
 /**
  * Created by ustc on 2016/5/31.
@@ -96,7 +95,7 @@ public class RedPacketUtil {
 
         Intent intent = new Intent(activity, RPRedPacketActivity.class);
         intent.putExtra(RPConstant.EXTRA_MONEY_INFO, mRedPacketInfo);
-        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, AuthDataUtils.getInstance().getAuthData(mCurrentUser.getName()));
+        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, TokenUtils.getInstance().getAuthData(mCurrentUser.getName()));
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -127,9 +126,9 @@ public class RedPacketUtil {
             } else if (mChatPage.chatType == 2) {//群聊
                 mRedPacketInfo.chatType = RPConstant.CHATTYPE_GROUP;
             }
-            String packetType = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
-            String specialReceiveId = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID);
-            if (!TextUtils.isEmpty(packetType) && packetType.equals(RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+            String packetType = jsonRedPacket.getString(RPConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+            String specialReceiveId = jsonRedPacket.getString(RPConstant.MESSAGE_ATTR_SPECIAL_RECEIVER_ID);
+            if (!TextUtils.isEmpty(packetType) && packetType.equals(RPConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
                 GotyeUser userTemp = new GotyeUser();
                 userTemp.setName(specialReceiveId);
                 GotyeUser specialUser = api.getUserDetail(userTemp, false);
@@ -144,7 +143,7 @@ public class RedPacketUtil {
                 mRedPacketInfo.toUserId = mChatPage.currentLoginUser.getName();
             }
 
-            AuthData authData = AuthDataUtils.getInstance().getAuthData(mChatPage.currentLoginUser.getName());
+            AuthData authData = TokenUtils.getInstance().getAuthData(mChatPage.currentLoginUser.getName());
             RPOpenPacketUtil.getInstance().openRedPacket(mRedPacketInfo, authData, mChatPage, new RPOpenPacketUtil.RPOpenPacketCallBack() {
                 @Override
                 public void onSuccess(String senderId, String senderNickname) {
@@ -173,14 +172,6 @@ public class RedPacketUtil {
     }
 
     /**
-     * 拆红包回调接口
-     */
-    public interface OpenRedPacketSuccess {
-
-        void onSuccess(String senderId, String senderNickname);
-    }
-
-    /**
      * 打开零钱页
      * @param fragmentActivity
      * @param fromNickname
@@ -194,7 +185,7 @@ public class RedPacketUtil {
         redPacketInfo.fromNickName = fromNickname;
         redPacketInfo.fromAvatarUrl = fromAvatarUrl;
         intent.putExtra(RPConstant.EXTRA_MONEY_INFO, redPacketInfo);
-        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, AuthDataUtils.getInstance().getAuthData(userId));
+        intent.putExtra(RPConstant.EXTRA_AUTH_INFO, TokenUtils.getInstance().getAuthData(userId));
         fragmentActivity.startActivity(intent);
     }
 
@@ -213,8 +204,8 @@ public class RedPacketUtil {
             if (!TextUtils.isEmpty(extraData)) {
                 try {
                     JSONObject rpJsonObject = new JSONObject(extraData);
-                    if (rpJsonObject.has(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)
-                            && rpJsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)) {
+                    if (rpJsonObject.has(RPConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)
+                            && rpJsonObject.getBoolean(RPConstant.MESSAGE_ATTR_IS_RED_PACKET_MESSAGE)) {
 
                         return rpJsonObject;
                     }
@@ -242,8 +233,8 @@ public class RedPacketUtil {
             if (!TextUtils.isEmpty(extraData)) {
                 try {
                     JSONObject ackJsonObject = new JSONObject(extraData);
-                    if (ackJsonObject.has(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)
-                            && ackJsonObject.getBoolean(RedPacketConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)) {
+                    if (ackJsonObject.has(RPConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)
+                            && ackJsonObject.getBoolean(RPConstant.MESSAGE_ATTR_IS_RED_PACKET_ACK_MESSAGE)) {
 
                         return ackJsonObject;
                     }
@@ -260,13 +251,12 @@ public class RedPacketUtil {
      * @param message
      * @return
      */
-    public static boolean isMyAckMessage(GotyeMessage message) {
+    public static boolean isMyAckMessage(GotyeMessage message,String currentUserId) {
         JSONObject jsonObject = isRedPacketAckMsg(message);
         if (jsonObject != null) {
             try {
-                String receiveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接受者id
-                String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
-                String currentUserId = AuthDataUtils.getInstance().getLoginUserId();
+                String receiveUserId = jsonObject.getString(RPConstant.EXTRA_RED_PACKET_RECEIVER_ID);//红包接受者id
+                String sendUserId = jsonObject.getString(RPConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
                 if (TextUtils.isEmpty(currentUserId)) {
                     return false;
                 }

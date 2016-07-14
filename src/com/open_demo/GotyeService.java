@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.easemob.redpacketsdk.constant.RPConstant;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeDelegate;
 import com.gotye.api.GotyeGroup;
@@ -23,8 +24,6 @@ import com.open_demo.util.AppUtil;
 import com.open_demo.util.RedPacketUtil;
 
 import org.json.JSONObject;
-
-import utils.RedPacketConstant;
 
 public class GotyeService extends Service {
     public static final String ACTION_INIT = "gotyeim.init";
@@ -145,17 +144,17 @@ public class GotyeService extends Service {
                 JSONObject redPacketAckJSON = RedPacketUtil.isRedPacketAckMsg(message);
                 if (redPacketJSON != null) {//红包消息
                     try {
-                        String greetings = redPacketJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+                        String greetings = redPacketJSON.getString(RPConstant.EXTRA_RED_PACKET_GREETING);
                         msg = message.getSender().getName() + greetings;
                     } catch (org.json.JSONException e) {
                         e.printStackTrace();
                     }
 
-                } else if (redPacketAckJSON != null) {
+                } else if (redPacketAckJSON != null) {//回执消息不push
                     //红包领取消息不提示
-                    if (!RedPacketUtil.isMyAckMessage(message)) {
+                    String currentUserId = currentLoginUser.getName();   //当前登陆用户id
+                    if (!RedPacketUtil.isMyAckMessage(message, currentUserId)) {
                         api.deleteMessage(message);
-                        return;
                     }
                     return;
                 } else {

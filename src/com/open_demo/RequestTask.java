@@ -10,20 +10,17 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import utils.AuthDataUtils;
+import utils.TokenUtils;
 
 
 public class RequestTask extends AsyncTask<String, String, String> {
-    private final String TAG = "RedPakcet";
+    private final String TAG = "RedPacket";
     private String userID;
     private Context context;
-    private final int HANDLER_LOGIN_SUCCESS = 1;
-    private final int HANDLER_LOGIN_FAILURE = 0;
 
     public RequestTask(Context context, String userID  ) {
         this.context = context;
         this.userID = userID;
-        AuthDataUtils.getInstance().setLoginUserId(userID);
      }
 
     @Override
@@ -58,7 +55,7 @@ public class RequestTask extends AsyncTask<String, String, String> {
         try {
             if (result != null) {
                 JSONObject jsonObj =   JSONObject.parseObject(result);
-                AuthDataUtils.getInstance().setAuthData(jsonObj,userID);
+                TokenUtils.getInstance().setAuthData(jsonObj,userID);
             }
         } catch (Exception e) {
             e.printStackTrace();

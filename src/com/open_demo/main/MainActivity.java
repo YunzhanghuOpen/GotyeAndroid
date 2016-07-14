@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -324,10 +323,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         public void onReceiveMessage(GotyeMessage message) {
 
             String currentUserId =currentLoginUser.getName();   //当前登陆用户id
-            if(!RedPacketUtil.isMyAckMessage(message)){
+            if(!RedPacketUtil.isMyAckMessage(message,currentUserId)){
                 api.deleteMessage(message);
-                Log.d("delete--->>","Main");
-                Log.d("currentUserId--->>",currentUserId);
                   return;
             }
             if (returnNotify) {

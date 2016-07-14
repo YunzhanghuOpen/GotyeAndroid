@@ -39,8 +39,6 @@ import org.json.JSONException;
 import java.io.File;
 import java.util.List;
 
-import utils.RedPacketConstant;
-
 
 public class ChatMessageAdapter extends BaseAdapter {
 
@@ -318,13 +316,13 @@ public class ChatMessageAdapter extends BaseAdapter {
     //红包消息的显示和点击事件
     private void handleRedPacketMessage(final GotyeMessage message, ViewHolder holder, int position, View convertView, final org.json.JSONObject jsonRedPacket) {
         try {
-            String sponsorName = jsonRedPacket.getString(RedPacketConstant.EXTRA_SPONSOR_NAME);
-            String greetings = jsonRedPacket.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+            String sponsorName = jsonRedPacket.getString(RPConstant.EXTRA_SPONSOR_NAME);
+            String greetings = jsonRedPacket.getString(RPConstant.EXTRA_RED_PACKET_GREETING);
             holder.tv_money_greeting.setText(greetings);
             holder.tv_sponsor_name.setText(sponsorName);
 
-            String packetType = jsonRedPacket.getString(RedPacketConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
-            if (!TextUtils.isEmpty(packetType) && TextUtils.equals(packetType, RedPacketConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
+            String packetType = jsonRedPacket.getString(RPConstant.MESSAGE_ATTR_RED_PACKET_TYPE);
+            if (!TextUtils.isEmpty(packetType) && TextUtils.equals(packetType, RPConstant.GROUP_RED_PACKET_TYPE_EXCLUSIVE)) {
                 holder.tv_packet_type.setVisibility(View.VISIBLE);
                 holder.tv_packet_type.setText(chatPage.getResources().getString(R.string.exclusive_red_packet));
             } else {
@@ -341,7 +339,7 @@ public class ChatMessageAdapter extends BaseAdapter {
                     } else {//红包发送方
                         moneyMsgDirect = RPConstant.MESSAGE_DIRECT_SEND;
                     }
-                    com.open_demo.util.RedPacketUtil.openRedPacket(chatPage, jsonRedPacket, moneyMsgDirect, api);
+                    RedPacketUtil.openRedPacket(chatPage, jsonRedPacket, moneyMsgDirect, api);
                 }
             });
 
@@ -354,10 +352,10 @@ public class ChatMessageAdapter extends BaseAdapter {
     private void handleRedPacketAckMessage(GotyeMessage message, ViewHolder holder, int position, org.json.JSONObject jsonObject) {
         try {
             String currentUserId = chatPage.currentLoginUser.getName(); //当前登陆用户id
-            String receiveUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_ID);
-            String receiveUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
-            String sendUserId = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
-            String sendUserNick = jsonObject.getString(RedPacketConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
+            String receiveUserId = jsonObject.getString(RPConstant.EXTRA_RED_PACKET_RECEIVER_ID);
+            String receiveUserNick = jsonObject.getString(RPConstant.EXTRA_RED_PACKET_RECEIVER_NAME);//红包接收者昵称
+            String sendUserId = jsonObject.getString(RPConstant.EXTRA_RED_PACKET_SENDER_ID);//红包发送者id
+            String sendUserNick = jsonObject.getString(RPConstant.EXTRA_RED_PACKET_SENDER_NAME);//红包发送者昵称
             //发送者和领取者都是自己-
             if (currentUserId.equals(receiveUserId) && currentUserId.equals(sendUserId)) {
                 holder.tv_money_msg.setText(chatPage.getResources().getString(R.string.money_msg_take_money));
@@ -610,13 +608,13 @@ public class ChatMessageAdapter extends BaseAdapter {
                         : inflater.inflate(R.layout.layout_row_sent_message, null);
             case GotyeMessageTypeText:
 
-                if (CheckRedPacketMessageUtil.isRedPacketMessage(message) != null) {
+                if (RedPacketUtil.isRedPacketMsg(message) != null) {
 
                     return getDirect(message) == MESSAGE_DIRECT_RECEIVE ? inflater
                             .inflate(R.layout.gotye_row_received_redpacket, null)
                             : inflater.inflate(R.layout.gotye_row_sent_redpacket, null);
 
-                } else if (CheckRedPacketMessageUtil.isRedPacketAckedMessage(message) != null) {
+                } else if (RedPacketUtil.isRedPacketAckMsg(message) != null) {
 
                     return inflater
                             .inflate(R.layout.gotye_row_redpacket_ack, null);
