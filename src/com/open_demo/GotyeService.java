@@ -11,8 +11,6 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alibaba.fastjson.JSONException;
-import com.alibaba.fastjson.JSONObject;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeDelegate;
 import com.gotye.api.GotyeGroup;
@@ -22,7 +20,9 @@ import com.gotye.api.GotyeNotify;
 import com.gotye.api.GotyeUser;
 import com.open_demo.main.MainActivity;
 import com.open_demo.util.AppUtil;
-import com.open_demo.util.CheckRedPacketMessageUtil;
+import com.open_demo.util.RedPacketUtil;
+
+import org.json.JSONObject;
 
 import utils.RedPacketConstant;
 
@@ -31,6 +31,7 @@ public class GotyeService extends Service {
     public static final String ACTION_LOGIN = "gotyeim.login";
     private GotyeAPI api;
     private GotyeUser currentLoginUser;
+
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
@@ -40,7 +41,7 @@ public class GotyeService extends Service {
     public void onCreate() {
         super.onCreate();
         api = GotyeAPI.getInstance();
-        currentLoginUser =api.getLoginUser();
+        currentLoginUser = api.getLoginUser();
         MyApplication.loadSelectedKey(this);
         //亲加内部调试用，一般用户请忽略
         if (!TextUtils.isEmpty(MyApplication.IP)) {
@@ -140,23 +141,24 @@ public class GotyeService extends Service {
         public void onReceiveMessage(GotyeMessage message) {
             String msg = null;
             if (message.getType() == GotyeMessageType.GotyeMessageTypeText) {
-                JSONObject redpacketJSON=CheckRedPacketMessageUtil.isRedPacketMessage(message);
-                JSONObject redpacketAckJSON=CheckRedPacketMessageUtil.isRedPacketAckedMessage(message);
-                if(redpacketJSON!=null){
-                    String greetings = redpacketJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
-                    msg = message.getSender().getName() +greetings;
-                }else if(redpacketAckJSON!=null){
-                    //红包领取消息不提示
-                    String currentUserId =currentLoginUser.getName();//当前登陆用户id
+                JSONObject redPacketJSON = RedPacketUtil.isRedPacketMsg(message);
+                JSONObject redPacketAckJSON = RedPacketUtil.isRedPacketAckMsg(message);
+                if (redPacketJSON != null) {//红包消息
+                    try {
+                        String greetings = redPacketJSON.getString(RedPacketConstant.EXTRA_RED_PACKET_GREETING);
+                        msg = message.getSender().getName() + greetings;
+                    } catch (org.json.JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                    if(!CheckRedPacketMessageUtil.isMyAckMessage(message)){
+                } else if (redPacketAckJSON != null) {
+                    //红包领取消息不提示
+                    if (!RedPacketUtil.isMyAckMessage(message)) {
                         api.deleteMessage(message);
-                        Log.d("delete--->>","Service");
-                        Log.d("currentUserId--->>",currentUserId);
                         return;
                     }
                     return;
-                }else{
+                } else {
                     msg = message.getSender().getName() + ":" + message.getText();
                 }
 

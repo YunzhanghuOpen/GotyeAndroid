@@ -36,7 +36,15 @@ import utils.RedPacketConstant;
  * Created by ustc on 2016/5/31.
  */
 public class RedPacketUtil {
-
+    /**
+     *  打开发送红包界面
+     * @param activity
+     * @param chatType //单聊或者群聊
+     * @param toId  //单聊接受红包者ID,群聊ID
+     * @param mCurrentUser //当前用户
+     * @param requestCode //请求code
+     * @param mAllMembers //所有的群成员
+     */
     public static void startRedPacketActivityForResult(Activity activity, int chatType, String toId, final GotyeUser mCurrentUser, int requestCode, final List<GotyeUser> mAllMembers) {
         RedPacketInfo mRedPacketInfo = new RedPacketInfo();
         //传递参数到红包sdk：发送者头像url，昵称（缺失则传id）
@@ -92,7 +100,13 @@ public class RedPacketUtil {
         activity.startActivityForResult(intent, requestCode);
     }
 
-
+    /**
+     *  打开红包
+     * @param mChatPage
+     * @param jsonRedPacket
+     * @param mDirect
+     * @param api
+     */
     public static void openRedPacket(final ChatPage mChatPage, JSONObject jsonRedPacket, String mDirect, GotyeAPI api) {
 
         try {
@@ -166,7 +180,13 @@ public class RedPacketUtil {
         void onSuccess(String senderId, String senderNickname);
     }
 
-
+    /**
+     * 打开零钱页
+     * @param fragmentActivity
+     * @param fromNickname
+     * @param fromAvatarUrl
+     * @param userId
+     */
     public static void startChangeActivity(FragmentActivity fragmentActivity, String fromNickname, String fromAvatarUrl, String userId) {
 
         Intent intent = new Intent(fragmentActivity, RPChangeActivity.class);
@@ -178,6 +198,11 @@ public class RedPacketUtil {
         fragmentActivity.startActivity(intent);
     }
 
+    /**
+     *  是否是红包消息
+     * @param message
+     * @return
+     */
     public static JSONObject isRedPacketMsg(GotyeMessage message) {
         //如果没有扩展字段直接返回null
         if (message.getExtraData() == null) {
@@ -202,6 +227,11 @@ public class RedPacketUtil {
         return null;
     }
 
+    /**
+     * 是否是回执消息
+     * @param message
+     * @return
+     */
     public static JSONObject isRedPacketAckMsg(GotyeMessage message) {
         //如果没有扩展字段直接返回null
         if (message.getExtraData() == null) {
@@ -225,6 +255,11 @@ public class RedPacketUtil {
         return null;
     }
 
+    /**
+     * 是否是发送红包者的回执消息
+     * @param message
+     * @return
+     */
     public static boolean isMyAckMessage(GotyeMessage message) {
         JSONObject jsonObject = isRedPacketAckMsg(message);
         if (jsonObject != null) {

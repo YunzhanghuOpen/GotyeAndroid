@@ -26,10 +26,6 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.easemob.redpacketsdk.bean.AuthData;
-import com.easemob.redpacketsdk.bean.RedPacketInfo;
-import com.easemob.redpacketsdk.constant.RPConstant;
-import com.easemob.redpacketui.ui.activity.RPChangeActivity;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeDelegate;
 import com.gotye.api.GotyeMedia;
@@ -37,14 +33,11 @@ import com.gotye.api.GotyeStatusCode;
 import com.gotye.api.GotyeUser;
 import com.open_demo.MyApplication;
 import com.open_demo.R;
-import com.open_demo.RequestTask;
 import com.open_demo.WelcomePage;
 import com.open_demo.util.BitmapUtil;
 import com.open_demo.util.ImageCache;
 import com.open_demo.util.ToastUtil;
-
-import utils.AuthDataUtils;
-import utils.RedPacketUtil;
+import com.open_demo.util.RedPacketUtil;
 
 //import android.app.Fragment;
 
@@ -147,7 +140,7 @@ public class SettingFragment extends Fragment {
                 MyApplication.setNewMsgNotify(arg1, user.getName());
             }
         });
-
+        //零钱
         getView().findViewById(R.id.money_layout).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

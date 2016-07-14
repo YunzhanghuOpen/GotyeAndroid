@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSONObject;
 import com.gotye.api.GotyeAPI;
 import com.gotye.api.GotyeChatTargetType;
 import com.gotye.api.GotyeDelegate;
@@ -32,13 +31,11 @@ import com.open_demo.R;
 import com.open_demo.WelcomePage;
 import com.open_demo.util.BeepManager;
 import com.open_demo.util.BitmapUtil;
-import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.ImageCache;
+import com.open_demo.util.RedPacketUtil;
 import com.open_demo.util.URIUtil;
 
 import java.util.List;
-
-import utils.RedPacketConstant;
 
 //import android.app.FragmentManager;
 //import android.app.FragmentTransaction;
@@ -327,7 +324,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         public void onReceiveMessage(GotyeMessage message) {
 
             String currentUserId =currentLoginUser.getName();   //当前登陆用户id
-            if(!CheckRedPacketMessageUtil.isMyAckMessage(message)){
+            if(!RedPacketUtil.isMyAckMessage(message)){
                 api.deleteMessage(message);
                 Log.d("delete--->>","Main");
                 Log.d("currentUserId--->>",currentUserId);

@@ -52,10 +52,10 @@ import com.gotye.api.WhineMode;
 import com.open_demo.R;
 import com.open_demo.adapter.ChatMessageAdapter;
 import com.open_demo.main.MainActivity;
-import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.CommonUtils;
 import com.open_demo.util.GotyeVoicePlayClickPlayListener;
 import com.open_demo.util.ProgressDialogUtil;
+import com.open_demo.util.RedPacketUtil;
 import com.open_demo.util.SendImageMessageTask;
 import com.open_demo.util.ToastUtil;
 import com.open_demo.util.URIUtil;
@@ -1022,14 +1022,11 @@ public class ChatPage extends FragmentActivity implements OnClickListener {
         @Override
         public void onReceiveMessage(GotyeMessage message) {
             String currentUserId = currentLoginUser.getName();   //当前登陆用户id
-            if (!CheckRedPacketMessageUtil.isMyAckMessage(message)) {
+            if (!RedPacketUtil.isMyAckMessage(message)) {
                 api.deleteMessage(message);
-                //TODO 删除打印
-                Log.d("delete--->>", "Chat");
-                Log.d("currentUserId--->>", currentUserId);
                 return;
             }
-            // GotyeChatManager.getInstance().insertChatMessage(message);
+
             if (chatType == 0) {
                 if (isMyMessage(message)) {
                     adapter.addMsgToBottom(message);

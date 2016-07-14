@@ -24,7 +24,6 @@ import com.gotye.api.GotyeUser;
 import com.open_demo.R;
 import com.open_demo.main.MessageFragment;
 import com.open_demo.util.BitmapUtil;
-import com.open_demo.util.CheckRedPacketMessageUtil;
 import com.open_demo.util.ImageCache;
 import com.open_demo.util.TimeUtil;
 
